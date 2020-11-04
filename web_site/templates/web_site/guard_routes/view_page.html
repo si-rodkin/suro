@@ -1,0 +1,63 @@
+{% extends "web_site/base.html" %}
+
+{% load static %}
+
+{% block title %}{{block.super}} - Маршруты охраны: просмотр{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <div class="row">
+            <div class="col">
+                <h1>Маршруты охраны:</h1>
+            </div>
+        </div>
+        <div class="row" style="justify-content: flex-end; margin-bottom: 1%;">
+            <div class="col-1">
+                <a href="/guarded-objects/{{object_id}}/guard-routes/0">
+                    <button class="btn btn-success">Добавить</button>
+                </a>
+            </div>
+        </div>
+        <table class="table">
+            <tr>
+                <th>Наименование</th>
+                <th></th>
+            </tr>
+            {% for guard_route in routes%}
+            <tr>
+                <td>{{guard_route.name}}</td>
+                <td>
+                    <a data-action="edit" href="/guarded-objects/{{object_id}}/guard-routes/{{guard_route.id}}"><i
+                            class="fas fa-edit"></i></a>
+                    <a data-action="delete"
+                       href="/api/guard-routes/{{guard_route.id}}"><i
+                            class="fas fa-trash-alt"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<script>
+        document.getElementsByTagName('table')[0].addEventListener('click', function(event) {
+            if (event.target.tagName == 'I' && event.target.closest('A').dataset['action'] == 'delete') {
+                event.preventDefault()
+                const a = event.target.closest('A')
+                axios({
+                    method: 'delete',
+                    url: a.href,
+                    headers: {
+                        'X-CSRFToken': '{{csrf_token}}'
+                    }
+                }).then(response => {
+                    if (response.status == 204) {
+                        a.closest('TR').hidden = true;
+                    }
+                })
+            }
+        })
+
+</script>
+{% endblock %}

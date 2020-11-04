@@ -1,0 +1,72 @@
+{% extends "web_site/base.html" %}
+
+{% load static %}
+
+{% block title %}{{block.super}} - Маркеры: просмотр{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <h1>Маркеры:</h1>
+                </div>
+            </div>
+            <div class="row" style="justify-content: flex-end; margin-bottom: 1%;">
+                <div class="col-1">
+                    <a href="/markers/0"><button class="btn btn-success">Добавить</button></a>
+                </div>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>Идентификатор</th>
+                    <th>Дни обхода</th>
+                    <th>Время начала обхода</th>
+                    <th>Время конца обхода</th>
+                    <th>Время допуска</th>
+                    <th>Время опоздания</th>
+                    <th>Маршрут</th>
+                    <th></th>
+                </tr>
+
+                {% for marker in markers%}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td><!-- TODO: дни обхода --> </td>
+                        <td>{{marker.start_time}}</td>
+                        <td>{% if marker.start_time is not None %}{{marker.start_time}}{% else %}-{% endif %}</td>
+                        <td>{{marker.time_allowance}}</td>
+                        <td>{{marker.late_time}}</td>
+                        <td>{% if marker.route is not None %}{{marker.route}}{% else %}-{% endif %}</td>
+                        <td>
+                            <a data-action="edit" href="{% url 'web_site:marker_detail' marker.rfid %}"><i class="fas fa-edit"></i></a>
+                            <a data-action="delete" href="{% url 'api:marker' marker.rfid %}"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementsByTagName('table')[0].addEventListener('click', function(event) {
+            if (event.target.tagName == 'I' && event.target.closest('A').dataset['action'] == 'delete') {
+                event.preventDefault()
+                const a = event.target.closest('A')
+                axios({
+                    method: 'delete',
+                    url: a.href,
+                    headers: {
+                        'X-CSRFToken': '{{csrf_token}}'
+                    }
+                }).then(response => {
+                    if (response.status == 204) {
+                        a.closest('TR').hidden = true;
+                    }
+                })
+            }
+        })
+    </script>
+<!--    <script src="{% static '/web_site/js/devices.js' %}"></script>-->
+{% endblock %}
+

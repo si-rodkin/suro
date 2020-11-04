@@ -1,0 +1,111 @@
+{% extends "web_site/base.html" %}
+
+{% load static %}
+
+{% block title %}{{block.super}} - Маркеры: {% if device.id is None %}добавление{% else %}редактирование{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <div class="row">
+            <div class="col">
+                <h1>{% if marker.id is None %}Добавление{% else %}Редактирование{% endif %} маркера:</h1>
+            </div>
+        </div>
+        <div class="row">
+            <form>
+                <!--                    TODO: <th>Маршрут</th>-->
+
+
+                <div class="form-group" id="days">
+                    <label for="days">Дни обхода:</label>
+                    {% for day in marker.days_range %}
+                    <div class="form-check">
+                        <input class="form-check-input" id="day-{{forloop.counter}}" name="day-{{forloop.counter}}"
+                               type="checkbox">
+                        <label class="form-check-label" for="day-{{forloop.counter}}">
+                            {{day}}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="start_time">Время начала обхода: {{marker.start_time}}</label>
+                    <input class="form-control" id="start_time" name="start_time" type="time"
+                           value="{{marker.start_time|time:'H:i'}}">
+                </div>
+                <div class="form-group">
+                    <label for="end_time">Время окончания обхода</label>
+                    <input class="form-control" id="end_time" name="end_time" type="time"
+                           value="{{marker.end_time|time:'H:i'}}">
+                </div>
+                <div class="form-group">
+                    <label for="time_allowance">Время допуска</label>
+                    <input class="form-control" id="time_allowance" name="time_allowance" type="number"
+                           value="{{marker.time_allowance}}">
+                </div>
+                <div class="form-group">
+                    <label for="late_time">Время опоздания</label>
+                    <input class="form-control" id="late_time" name="late_time" type="number"
+                           value="{{marker.late_time}}">
+                </div>
+                <a href="{% url 'web_site:markers_list' %}"><input type="button" value="Закрыть" class="btn"></a>
+                <input type="button" value="Сохранить" class="btn btn-success submit-btn">
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+        function setupDays() {
+            let days = '{{marker.days}}'
+            if (days === 'None') days = 0;
+
+            for (i = 1; i < 8; i++) {
+                document.getElementById('day-' + i).checked = days & (1 << (i-1))
+            }
+        }
+        setupDays()
+
+        function collectDays () {
+            let days = 0;
+            for (i = 1; i < 8; i++) {
+                if (document.getElementById('day-' + i).checked)
+                    days |= 1 << (i-1);
+            }
+            return days;
+        }
+
+        document.getElementsByClassName('submit-btn')[0].addEventListener('click', function(event) {
+            event.preventDefault()
+            const days = collectDays()
+            const start_time = document.getElementById('start_time').value
+            const end_time = document.getElementById('end_time').value
+            const time_allowance = document.getElementById('time_allowance').value
+            const late_time = document.getElementById('late_time').value
+
+            if (end_time == undefined)
+                end_time = ''
+
+            {% if marker.id is not None %}
+            axios.put('/api/markers/{{marker.id}}', {
+                    'id': '{{marker.id}}',
+            {% else %}
+            axios.post('/api/markers/', {
+            {% endif %}
+                    'rfid': '2',
+                    'days': days,
+                    'start_time': start_time,
+                    'end_time': end_time,
+                    'time_allowance': time_allowance,
+                    'late_time': late_time
+                },
+                {
+                    headers: {
+                        'X-CSRFToken': '{{csrf_token}}'
+                    }
+                })
+        })
+
+</script>
+{% endblock %}

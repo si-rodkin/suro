@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}СУРО{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'web_site/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'web_site/css/all.min.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"
+            integrity="sha512-nqIFZC8560+CqHgXKez61MI0f9XSTKLkm0zFVm/99Wt0jSTZ7yeeYwbzyl0SGn/s8Mulbdw+ScCG41hmO2+FKw=="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="row">
+    {% if user.is_authenticated %}
+    <div class="col-3">
+        <img src="{% static 'web_site/images/logo.jpg' %}" height="30" alt="">
+        Система учета работы охранников
+    </div>
+    <ul class="nav col">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'web_site:guarded_objects_list' %}">Охраняемые объекты</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'web_site:devices_list' %}">Устройства</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'web_site:markers_list' %}">Маркеры</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'web_site:statistic' %}">Статистика</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="">Отправка</a>
+        </li>
+    </ul>
+    <div class="header-right-block col-3">
+        <form class="form-inline" action="{% url 'web_site:login_page' %}">
+            <div style="margin-right: 50px">Пользователь: {{user.first_name}}</div>
+            <input class="btn btn-dark" type="submit" value="Выйти">
+        </form>
+    </div>
+    {% endif %}
+</header>
+<div class="content">
+    {% block content%}{% endblock %}
+</div>
+</body>
+</html>
