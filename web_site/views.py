@@ -32,14 +32,14 @@ class LoginView(View):
 class StatisticView(View):
     @method_decorator(login_required)
     def get(self, request):
-        return render(request, 'web_site/statistics/view_page.html', context={'user': request.user})
+        return render(request, 'web_site/statistics/list.html', context={'user': request.user})
 
 
 class DeviceView(View):
     @method_decorator(login_required)
     def get(self, request):
         devices = Device.objects.all()
-        return render(request, 'web_site/devices/view_page.html', context={'devices': devices})
+        return render(request, 'web_site/devices/list.html', context={'devices': devices})
 
 
 class EditDeviceView(View):
@@ -48,14 +48,14 @@ class EditDeviceView(View):
         device = Device()
         if id > 0:
             device = Device.objects.get(pk=id)
-        return render(request, 'web_site/devices/action_page.html', context={'device': device})
+        return render(request, 'web_site/devices/edit.html', context={'device': device})
 
 
 class GuardedObjectsView(View):
     @method_decorator(login_required)
     def get(self, request):
         guarded_objects = GuardedObject.objects.all()
-        return render(request, 'web_site/guarded_objects/view_page.html', context={'guarded_objects': guarded_objects})
+        return render(request, 'web_site/guarded_objects/list.html', context={'guarded_objects': guarded_objects})
 
 
 class GuardedObjectsDetailView(View):
@@ -64,7 +64,7 @@ class GuardedObjectsDetailView(View):
         guarded_object = GuardedObject()
         if id is not -1:
             guarded_object = GuardedObject.objects.get(pk=id)
-        return render(request, 'web_site/guarded_objects/action_page.html', context={'guarded_object': guarded_object})
+        return render(request, 'web_site/guarded_objects/edit.html', context={'guarded_object': guarded_object})
 
 
 class GuardRouteView(View):
@@ -72,7 +72,7 @@ class GuardRouteView(View):
     def get(self, request, object_id):
         guarded_object = GuardedObject.objects.get(pk=object_id)
         routes = GuardRoute.objects.filter(guard_object=guarded_object)
-        return render(request, 'web_site/guard_routes/view_page.html',
+        return render(request, 'web_site/guard_routes/list.html',
                       context={'object_id': object_id, 'routes': routes})
 
 
@@ -85,7 +85,7 @@ class GuardRouteDetailView(View):
         if route_id is not -1:
             route = GuardRoute.objects.get(pk=route_id)
             markers = markers | Marker.objects.filter(route=route)
-        return render(request, 'web_site/guard_routes/action_page.html',
+        return render(request, 'web_site/guard_routes/edit.html',
                       context={'object_id': object_id, 'route': route, 'devices': devices, 'markers': markers})
 
 
@@ -93,7 +93,7 @@ class MarkersView(View):
     @method_decorator(login_required)
     def get(self, request):
         markers = Marker.objects.all()
-        return render(request, 'web_site/markers/view_page.html', context={'markers': markers})
+        return render(request, 'web_site/markers/list.html', context={'markers': markers})
 
 
 class MarkerDetailsView(View):
@@ -102,14 +102,17 @@ class MarkerDetailsView(View):
         marker = Marker()
         if id is not -1:
             marker = Marker.objects.get_or_create(pk=id)
-        return render(request, 'web_site/markers/action_page.html', context={'marker': marker})
+        return render(request, 'web_site/markers/edit.html', context={'marker': marker})
 
-# TODO: разрешить доступ только для Owners- и Clients-ролей
+# TODO: разрешить доступ только для Admins- и Inspector-ролей
 # TODO: сохранять идентификатор пользователя в сессии при авторизации
 @login_required
-def user_list_page(request):
+def user_list(request):
     """
     Выбирет пользователей в системе и рендерит страницу с ними
     """
-    # users = User.objects.
-    return render(request, 'web_site/users/view_page.html', context={'users': users})
+    users = User.objects.all()
+    return render(request, 'web_site/users/list.html', context={'users': users})
+
+def user_details(request, id):
+    pass

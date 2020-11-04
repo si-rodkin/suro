@@ -23,7 +23,7 @@ def get_current_route(device_imei: str) -> []:
     now = datetime.now()
 
     device = Device.objects.get(imei=device_imei)
-    routes = device.routes.all()
+    routes = device.guard_routes.all()
     current_markers = []
     for route in routes:
         delta = 100

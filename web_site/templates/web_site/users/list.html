@@ -9,12 +9,12 @@
     <div class="col">
         <div class="row">
             <div class="col">
-                <h1>Маршруты охраны:</h1>
+                <h1>Пользователи:</h1>
             </div>
         </div>
         <div class="row" style="justify-content: flex-end; margin-bottom: 1%;">
             <div class="col-1">
-                <a href="/guarded-objects/{{object_id}}/guard-routes/0">
+                <a href="/user/0">
                     <button class="btn btn-success">Добавить</button>
                 </a>
             </div>
@@ -25,6 +25,7 @@
                 <th>Фамилия</th>
                 <th>Имя</th>
                 <th>Отчество</th>
+                <th>Позиция</th>
                 <th></th>
             </tr>
             {% for user in users%}
@@ -32,13 +33,15 @@
                 <td>{{user.login}}</td>
                 <td>{{user.first_name}}</td>
                 <td>{{user.last_name}}</td>
-                <td>{{user.login}}</td>
+                <td>{{user.position}}</td>
                 <td>
-                    <a data-action="edit" href="/guarded-objects/{{object_id}}/guard-routes/{{guard_route.id}}"><i
-                            class="fas fa-edit"></i></a>
-                    <a data-action="delete"
-                       href="/api/guard-routes/{{guard_route.id}}"><i
-                            class="fas fa-trash-alt"></i></a>
+                    <a data-action="edit" href="{% url 'web_site:users_list' user.id %}">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    {% comment %} {% url 'api:user_edit' user.id %} {% endcomment %}
+                    <a data-action="delete" href="">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
                 </td>
             </tr>
             {% endfor %}

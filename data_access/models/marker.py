@@ -11,7 +11,7 @@ class Marker(models.Model):
     end_time = models.TimeField(verbose_name="Время окончания обхода")
     time_allowance = models.IntegerField(verbose_name="Время допуска")
     late_time = models.IntegerField(verbose_name="Время опоздания")
-    route = models.ForeignKey(GuardRoute, verbose_name="Маршрут", on_delete=models.SET_NULL, related_name="markers")
+    route = models.ForeignKey(GuardRoute, verbose_name="Маршрут", on_delete=models.SET_NULL, related_name="markers", null=True)
 
     class Meta:
         verbose_name = "Маркер"

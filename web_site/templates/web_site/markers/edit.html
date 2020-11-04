@@ -2,14 +2,14 @@
 
 {% load static %}
 
-{% block title %}{{block.super}} - Маркеры: {% if device.id is None %}добавление{% else %}редактирование{% endif %}{% endblock %}
+{% block title %}{{block.super}} - Маркеры: редактирование{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col">
         <div class="row">
             <div class="col">
-                <h1>{% if marker.id is None %}Добавление{% else %}Редактирование{% endif %} маркера:</h1>
+                <h1>Редактирование маркера:</h1>
             </div>
         </div>
         <div class="row">
@@ -87,13 +87,9 @@
             if (end_time == undefined)
                 end_time = ''
 
-            {% if marker.id is not None %}
             axios.put('/api/markers/{{marker.id}}', {
                     'id': '{{marker.id}}',
-            {% else %}
-            axios.post('/api/markers/', {
-            {% endif %}
-                    'rfid': '2',
+                    'rfid': '{{marker.rfid}}',
                     'days': days,
                     'start_time': start_time,
                     'end_time': end_time,

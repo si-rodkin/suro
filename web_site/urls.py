@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import LoginView, StatisticView, DeviceView, EditDeviceView, GuardedObjectsView, GuardedObjectsDetailView, \
-    GuardRouteView, GuardRouteDetailView, MarkersView, MarkerDetailsView
+    GuardRouteView, GuardRouteDetailView, MarkersView, MarkerDetailsView, user_list, user_details
 
 app_name = 'web_site'
 
@@ -22,4 +22,7 @@ urlpatterns = [
     path('guarded-objects/<int:object_id>/guard-routes/', GuardRouteView.as_view(), name="routes_list"),
     path('guarded-objects/<int:object_id>/guard-routes/<int:route_id>', GuardRouteDetailView.as_view(),
          name="route_detail"),
+
+    path('users/', user_list, name='users_list'),
+    path('users/<int:id>', user_details, name='users_details'),
 ]
