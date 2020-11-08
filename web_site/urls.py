@@ -24,5 +24,5 @@ urlpatterns = [
          name="route_detail"),
 
     path('users/', user_list, name='users_list'),
-    path('users/<int:id>', user_details, name='users_details'),
+    path('users/<int:id>', user_details, name='user_details'),
 ]

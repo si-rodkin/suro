@@ -1,25 +1,21 @@
-# TODO: вынести эти функции в модуль services
+import json
 from datetime import datetime, time
 
 from data_access.models import Device, Commit, Marker
 from eye_of_sauron.settings import BYTEORDER, API_COMMANDS
 
 
-def get_current_datetime() -> []:
-    response = [to_byte(API_COMMANDS['SyncDateTime'])]
-    now = datetime.now()
-    response.append(to_byte(now.hour))
-    response.append(to_byte(now.minute))
-    response.append(to_byte(now.second))
-    response.append(to_byte(now.day))
-    response.append(to_byte(now.month))
-    response.append(to_byte(now.year % 1000))
-    response.append(to_byte(now.weekday()))
-    return response
+def get_current_datetime() -> str:
+    response = { 'time': str(datetime.now()) }
+    return json.dumps(response)
+
+# {
+#   'time': '2020-11-07 10:39:31.347083'
+# }
 
 
-def get_current_route(device_imei: str) -> []:
-    response = [to_byte(API_COMMANDS['SyncDeviceRoute'])]
+def get_current_route(device_imei: str) -> str:
+    response = {}
     now = datetime.now()
 
     device = Device.objects.get(imei=device_imei)
@@ -37,10 +33,20 @@ def get_current_route(device_imei: str) -> []:
                 delta = (markers[0].start_time - now.time())
                 current_markers = markers
 
+    response['marker_count'] = len(current_markers)
+    response['markers'] = []
     for marker in current_markers:
-        response.append(to_byte(marker.start_time.minute))
-        response.append(to_byte(marker.start_time.hour))
-    return response
+        response['markers'].append({'start_time': str(marker.start_time)})
+    return json.dumps(response)
+
+# {
+#   'marker_count': 3,
+#   'markers': [
+#       { 'start_time': '10:10' },
+#       { 'start_time': '12:10' },
+#       { 'start_time': '14:10' },
+#   ]
+# }
 
 
 def read_commit(imei: str, rfid: str, hour: bytes, minute: bytes) -> []:
