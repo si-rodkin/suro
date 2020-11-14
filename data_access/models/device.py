@@ -10,3 +10,4 @@ class Device(models.Model):
 
     class Meta:
         verbose_name = "Устройство"
+        verbose_name_plural = "Устройства"

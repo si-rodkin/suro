@@ -62,7 +62,7 @@ class GuardedObjectsDetailView(View):
     @method_decorator(login_required)
     def get(self, request, id):
         guarded_object = GuardedObject()
-        if id is not -1:
+        if id > 0:
             guarded_object = GuardedObject.objects.get(pk=id)
         return render(request, 'web_site/guarded_objects/edit.html', context={'guarded_object': guarded_object})
 
@@ -82,7 +82,7 @@ class GuardRouteDetailView(View):
         route = GuardRoute()
         devices = Device.objects.all()
         markers = Marker.objects.filter(route=None)
-        if route_id is not -1:
+        if route_id > 0:
             route = GuardRoute.objects.get(pk=route_id)
             markers = markers | Marker.objects.filter(route=route)
         return render(request, 'web_site/guard_routes/edit.html',
@@ -100,7 +100,7 @@ class MarkerDetailsView(View):
     @method_decorator(login_required)
     def get(self, request, id):
         marker = Marker()
-        if id is not -1:
+        if id > 0:
             marker = Marker.objects.get_or_create(pk=id)
         return render(request, 'web_site/markers/edit.html', context={'marker': marker})
 

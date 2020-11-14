@@ -9,3 +9,4 @@ class GuardedObject(models.Model):
 
     class Meta:
         verbose_name = "Охраняемый объект"
+        verbose_name_plural = "Охраняемые объекты"

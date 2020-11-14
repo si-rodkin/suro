@@ -17,3 +17,4 @@ class User(DjangoUserModel):
 
     class Meta:
         verbose_name = "Пользователь системы"
+        verbose_name_plural = "Пользователи системы"

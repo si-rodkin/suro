@@ -13,6 +13,7 @@ class GuardRoute(models.Model):
 
     class Meta:
         verbose_name = "Маршрут охраны"
+        verbose_name_plural = "Маршруты охраны"
 
     def __str__(self):
         return 'Маршрут: ' + self.name.__str__()
