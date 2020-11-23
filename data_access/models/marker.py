@@ -5,7 +5,9 @@ from .guard_route import GuardRoute
 
 class Marker(models.Model):
     """Модель маркера"""
-    rfid = models.CharField(verbose_name="Номер RFID-карты", max_length=10, blank=False, unique=True, primary_key=True)
+
+    name = models.CharField(verbose_name="Название маркера", max_length=50)
+    rfid = models.CharField(verbose_name="Номер RFID-карты", max_length=10, blank=False, unique=True)
     route = models.ForeignKey(GuardRoute, verbose_name="Маршрут", on_delete=models.SET_NULL, related_name="markers", null=True)
 
     class Meta:

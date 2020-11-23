@@ -14,24 +14,14 @@
             </div>
             <table class="table">
                 <tr>
-                    <th>Идентификатор</th>
-                    <th>Дни обхода</th>
-                    <th>Время начала обхода</th>
-                    <th>Время конца обхода</th>
-                    <th>Время допуска</th>
-                    <th>Время опоздания</th>
+                    <th>Название</th>
                     <th>Маршрут</th>
                     <th></th>
                 </tr>
 
                 {% for marker in markers%}
                     <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td><!-- TODO: дни обхода --> </td>
-                        <td>{{marker.start_time}}</td>
-                        <td>{% if marker.start_time is not None %}{{marker.start_time}}{% else %}-{% endif %}</td>
-                        <td>{{marker.time_allowance}}</td>
-                        <td>{{marker.late_time}}</td>
+                        <td>{{marker.name}}</td>
                         <td>{% if marker.route is not None %}{{marker.route}}{% else %}-{% endif %}</td>
                         <td>
                             <a data-action="edit" href="{% url 'web_site:marker_detail' marker.rfid %}"><i class="fas fa-edit"></i></a>

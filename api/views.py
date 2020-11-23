@@ -3,9 +3,9 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-from data_access.models import Device, Marker, GuardedObject, GuardRoute
+from data_access.models import Device, Marker, GuardedObject, GuardRoute, Round
 from . import services
-from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, GuardRouteSerializer
+from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, GuardRouteSerializer, RoundSerializer
 
 
 def get_current_route(request, imei) -> HttpResponse:
@@ -62,3 +62,11 @@ class GuardRouteView(ListCreateAPIView):
 class GuardRouteDetailView(RetrieveUpdateDestroyAPIView):
     queryset = GuardRoute.objects.all()
     serializer_class = GuardRouteSerializer
+
+class RoundView(ListCreateAPIView):
+    queryset = Round.objects.all()
+    serializer_class = RoundSerializer
+
+class RoundDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Round.objects.all()
+    serializer_class = RoundSerializer

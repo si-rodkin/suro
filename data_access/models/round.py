@@ -9,7 +9,7 @@ class Round(models.Model):
     name = models.CharField(verbose_name="Наименование", max_length=50)
     days = models.IntegerField(verbose_name="Дни обхода")
     start_time = models.TimeField(verbose_name="Время начала обхода")
-    end_time = models.TimeField(verbose_name="Время окончания обхода")
+    end_time = models.TimeField(verbose_name="Время окончания обхода", null=True)
     time_allowance = models.IntegerField(verbose_name="Время допуска")
     late_time = models.IntegerField(verbose_name="Время опоздания")
 

@@ -99,10 +99,9 @@ class MarkersView(View):
 class MarkerDetailsView(View):
     @method_decorator(login_required)
     def get(self, request, id):
-        marker = Marker()
-        if id > 0:
-            marker = Marker.objects.get_or_create(pk=id)
-        return render(request, 'web_site/markers/edit.html', context={'marker': marker})
+        marker = Marker.objects.get(pk=id)
+        devices = marker.route.devices.all()
+        return render(request, 'web_site/markers/edit.html', context={'marker': marker, 'devices': devices})
 
 # TODO: разрешить доступ только для Admins- и Inspector-ролей
 # TODO: сохранять идентификатор пользователя в сессии при авторизации

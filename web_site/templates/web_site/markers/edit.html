@@ -15,92 +15,279 @@
         <div class="row">
             <form>
                 <!--                    TODO: <th>Маршрут</th>-->
-
-
-                <div class="form-group" id="days">
-                    <label for="days">Дни обхода:</label>
-                    {% for day in marker.days_range %}
-                    <div class="form-check">
-                        <input class="form-check-input" id="day-{{forloop.counter}}" name="day-{{forloop.counter}}"
-                               type="checkbox">
-                        <label class="form-check-label" for="day-{{forloop.counter}}">
-                            {{day}}
-                        </label>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="form-сontrol">
+                            <label for="name">Название точки:</label>
+                            <input id="name" name="name" value="{{marker.name}}">
+                        </div>
                     </div>
-                    {% endfor %}
                 </div>
-                <div class="form-group">
-                    <label for="start_time">Время начала обхода: {{marker.start_time}}</label>
-                    <input class="form-control" id="start_time" name="start_time" type="time"
-                           value="{{marker.start_time|time:'H:i'}}">
+
+                <div class="row">
+                    <table id="round-table" class="table">
+                        <tr>
+                            <th>День обхода</th>
+                            <th>Начало обхода</th>
+                            <th>Конец обхода</th>
+                            <th>Время допуска</th>
+                            <th>Время опоздания</th>
+                            <th>Устройство</th>
+                            <th></th>
+                        </tr>
+                        {% for round in marker.rounds.all %}
+                        <tr data-id='{{round.id}}' data-counter="{{forloop.index}}">
+                            <td>{{round.days}}</td>
+                            <td>{{round.start_time}}</td>
+                            <td>{{round.end_time}}</td>
+                            <td>{{round.late_time}}</td>
+                            <td>{{round.time_allowance}}</td>
+                            <td>{{round.device.name}}</td>
+                            <td data-col="actions">
+                                <a data-action='edit' href=""><i class="fas fa-edit"></i></a>
+                                <a data-action='delete' href=""><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        {% endfor %}
+                        </tr>
+                    </table>
                 </div>
-                <div class="form-group">
-                    <label for="end_time">Время окончания обхода</label>
-                    <input class="form-control" id="end_time" name="end_time" type="time"
-                           value="{{marker.end_time|time:'H:i'}}">
+                <div class="row">
+                    <div id="round-add-form" class="form-row">
+                        <div class="col">
+                            <select class="form-control" id="days" value=''>
+                                <option value='' disabled>День обхода</option>
+                                <option value=1>Понедельник</option>
+                                <option value=2>Вторник</option>
+                                <option value=3>Среда</option>
+                                <option value=4>Четверг</option>
+                                <option value=5>Пятница</option>
+                                <option value=6>Суббота</option>
+                                <option value=7>Воскресенье</option>
+                            </select>
+                        </div>
+                        <div class="col"><input class="form-control" id="start_time" placeholder="Время начала обхода" type="time"></div>
+                        <div class="col"><input class="form-control" id="end_time" placeholder="Время окончания обхода" type="time" value=null></div>
+                        <div class="col"><input class="form-control" id="late_time" placeholder="Время допуска" type="number" min="0"></div>
+                        <div class="col"><input class="form-control" id="time_allowance" placeholder="Время опоздания" type="number" min="0"></div>
+                        <div class="col">
+                            <select class="form-control" id="device" value=''>
+                                <option value='' disabled>Устройство</option>
+                                {% for device in devices %}
+                                <option value='{{device.id}}'>{{device.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col"><input id="create_round" data-action="create" type="button" value="Создать обход" class="btn btn-success submit-btn"></div>
+                        <div class="col"><input id="flush-form" type="button" value="Сброс" class="btn"></div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="time_allowance">Время допуска</label>
-                    <input class="form-control" id="time_allowance" name="time_allowance" type="number"
-                           value="{{marker.time_allowance}}">
-                </div>
-                <div class="form-group">
-                    <label for="late_time">Время опоздания</label>
-                    <input class="form-control" id="late_time" name="late_time" type="number"
-                           value="{{marker.late_time}}">
-                </div>
+
                 <a href="{% url 'web_site:markers_list' %}"><input type="button" value="Закрыть" class="btn"></a>
-                <input type="button" value="Сохранить" class="btn btn-success submit-btn">
+                <input type="button" value="Сохранить" class="btn btn-success submit-btn save-entity-btn">
             </form>
         </div>
     </div>
 </div>
 
 <script>
-        function setupDays() {
-            let days = '{{marker.days}}'
-            if (days === 'None') days = 0;
+        const actionsHTML = '<a data-action=\'edit\'href=""><i class="fas fa-edit"></i></a><a data-action=\'delete\'href=""><i class="fas fa-trash-alt"></i></a>';
+        // Поля сущности Обход
+        const round_fields = ['days', 'start_time', 'end_time', 'late_time', 'time_allowance', 'device'];
+        var round_operation_queue = [];
+        var editing_entity = {};
+        var counter = {% if marker.rounds.all.size %}{{marker.rounds.all.size}}{%else%} 0 {%endif%};
 
-            for (i = 1; i < 8; i++) {
-                document.getElementById('day-' + i).checked = days & (1 << (i-1))
+        /* Обработчик нажатия кнопки Создать обход */
+        function create_round_click_handler(event) {
+            event.preventDefault();
+
+            if (event.target.dataset['action'] === 'create')
+                create_action();
+            else
+                edit_action();
+            
+            flush_form();
+            event.target.dataset['action'] = 'create';
+        }
+
+        /* Создать новый обход */
+        function create_action() {
+            // Создаем строку для нового обхода
+            const newTablerRow = document.createElement('tr');
+            
+            // Создать объект для очереди
+            object = {method: 'POST', counter: ++counter};
+
+            newTablerRow.dataset['counter'] = object.counter;
+
+            // Для каждого поля сущности
+            for (let field of round_fields) {
+                // Выбираем значение поля из контрола
+                object[field] = document.getElementById(field).value;
+
+                // FIXME: костылик для end_time
+                if (field === 'end_time' && object[field] === '')
+                    object[field] = null;
+
+                // Создаем для него столбец в таблице
+                const col = document.createElement('td')
+                // Кладем значение поля в столбец таблицы
+                col.innerText = object[field]
+                // Добавляем столбец в новую строку
+                newTablerRow.appendChild(col);
+            }
+
+            // Создаем и вставляем столбец действий
+            const actions = document.createElement('td');
+            actions.innerHTML = actionsHTML;
+            newTablerRow.appendChild(actions);
+
+            document.getElementsByClassName('table')[0].appendChild(newTablerRow);
+
+            round_operation_queue.push(object);
+        }
+
+        /* Отредактировать существующий обхнод */
+        function edit_action() {
+            let object = round_operation_queue.find(round => round.counter == editing_entity.tr.dataset['counter']);
+
+            if (object === undefined) {
+                object = {
+                    method: 'PUT',
+                    id: editing_entity.tr.dataset['id'],
+                    counter: editing_entity.tr.dataset['counter']
+                }
+            }
+
+            for (const index in round_fields) {
+                editing_entity.tr.children[index].innerText = document.getElementById(round_fields[index]).value;
+                object[round_fields[index]] = document.getElementById(round_fields[index]).value;
             }
         }
-        setupDays()
 
-        function collectDays () {
-            let days = 0;
-            for (i = 1; i < 8; i++) {
-                if (document.getElementById('day-' + i).checked)
-                    days |= 1 << (i-1);
+        /* Обработчик кнопки редактирования обхода */
+        function edit_round_click_handler(event) {
+            const a = event.target.closest('a');
+            if (a && a.dataset['action'] === 'edit') {
+                event.preventDefault()
+
+                setupModel(event.target.closest('tr'));
+                setupEditingForm();
+                document.getElementById('create_round').dataset['action'] = 'edit';
+                document.getElementById('create_round').value = 'Обновить обход';
             }
-            return days;
         }
 
-        document.getElementsByClassName('submit-btn')[0].addEventListener('click', function(event) {
-            event.preventDefault()
-            const days = collectDays()
-            const start_time = document.getElementById('start_time').value
-            const end_time = document.getElementById('end_time').value
-            const time_allowance = document.getElementById('time_allowance').value
-            const late_time = document.getElementById('late_time').value
+        /* Установить модель в объект редактируемой сущности */
+        function setupModel(tableRow) {
+            editing_entity = {
+                id: tableRow.dataset['id'],
+                tr: tableRow,
+            }
 
-            if (end_time == undefined)
-                end_time = ''
+            for (let index in round_fields) {
+                if (tableRow.children[index].dataset['col'] !== 'actions')
+                    editing_entity[round_fields[index]] = tableRow.children[index].innerText;
+            }
+        }
+
+        /* Установить в поля формы значения полей редактируемого объекта */
+        function setupEditingForm() {
+            for (const field of round_fields) {
+                document.getElementById(field).value = editing_entity[field];
+            }
+        }
+
+        /* Обработчик кнопки удаления обхода */
+        function delete_round_click_handler(event) {
+            const a = event.target.closest('a');
+            if (a && a.dataset['action'] === 'delete') {
+                event.preventDefault();             
+                const tableRow = event.target.closest('tr');
+                
+                // Если элемент есть в бд
+                if (tableRow.dataset['id'] !== undefined) {
+                    const object = {
+                        method: 'DELETE',
+                        id: tableRow.dataset['id']
+                    };
+
+                    for (const index in round_fields) {
+                        object[round_fields[index]] = tableRow.children[index].innerText;
+                    }
+                    round_operation_queue.push(object);
+                }
+                // Если элемент был создан, но не сохранен в бд
+                else {
+                    round_operation_queue = round_operation_queue.filter(round => round.counter != tableRow.dataset['counter']);
+                }
+
+                tableRow.remove();
+            }
+        }
+
+        /* Обработчик кнопки очистки формы редактирования */
+        function flush_form_click_handler(event) {
+            flush_form();
+        }
+
+        /* Очистка формы редактирования */
+        function flush_form() {
+            document.getElementById('create_round').value = 'Создать обход';
+            for (const field of round_fields) {
+                document.getElementById(field).value = '';
+            }
+            editing_entity = {}
+        }
+
+        /* Выполнить очередь действий над обходами */
+        function process_round_operation_queue() {
+            round_operation_queue.forEach(function(operation) {
+                let url = '/api/rounds/';
+                if (operation.id !== undefined)
+                    url += operation.id;
+                
+                const object = {id: operation.id, marker: (function(){ return {{marker.id}}})() };
+
+                for (const field of round_fields) {
+                    object[field] = operation[field];
+                }
+
+                axios({
+                    method: operation.method,
+                    url: url,
+                    data: object,
+                    headers: {
+                        'X-CSRFToken': '{{csrf_token}}'
+                    }
+                })
+            });
+        }
+
+        document.getElementById('create_round').addEventListener('click', create_round_click_handler);
+        document.getElementById('flush-form').addEventListener('click', flush_form_click_handler);
+
+        document.getElementById('round-table').addEventListener('click', edit_round_click_handler);
+        document.getElementById('round-table').addEventListener('click', delete_round_click_handler);
+        
+        /* Обработка кнопки сохранения маркера */
+        document.getElementsByClassName('save-entity-btn')[0].addEventListener('click', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
 
             axios.put('/api/markers/{{marker.id}}', {
                     'id': '{{marker.id}}',
                     'rfid': '{{marker.rfid}}',
-                    'days': days,
-                    'start_time': start_time,
-                    'end_time': end_time,
-                    'time_allowance': time_allowance,
-                    'late_time': late_time
+                    'name': name
                 },
                 {
                     headers: {
                         'X-CSRFToken': '{{csrf_token}}'
                     }
-                })
+                }
+            );
+
+            process_round_operation_queue();
         })
 
 </script>
