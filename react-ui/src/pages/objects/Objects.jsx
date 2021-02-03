@@ -12,7 +12,9 @@ import Table from "../../components/table/Table";
 import ObjectMenu from './Menu';
 import ObjectForm from "./ObjectForm";
 
-const serviceUrl = 'http://localhost:8000/api/guarded-objects/';
+import * as enviroment from '../../enviroment';
+
+const serviceUrl = `${enviroment.apiHost}/api/guarded-objects/`;
 
 export default function Objects() {
     const [editDialogOpen, setEditDialogOpen] = React.useState(false);

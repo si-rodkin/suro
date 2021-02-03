@@ -7,7 +7,9 @@ import Input from '../../../components/dialog/controls/Input';
 
 import axios from 'axios';
 
-const serviceUrl = 'http://localhost:8000/api/rounds/';
+import * as enviroment from '../../../enviroment';
+
+const serviceUrl = `${enviroment.apiHost}/api/rounds/`;
 
 export default function RoundsForm({ value, close, open, saveHandler, devices }) {
     const [entity, changeEntity] = React.useState({});

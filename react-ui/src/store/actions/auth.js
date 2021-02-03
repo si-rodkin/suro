@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
+import * as enviroment from '../../enviroment';
 
 export const authStart = () => {
     return {
@@ -43,7 +44,7 @@ export const authLogin = (login, password) => {
 
     return dispatch => {
         authStart();
-        axios.post('http://localhost:8000/api/rest-auth/login/', {username: login, password: password})
+        axios.post(`${enviroment.apiHost}/api/rest-auth/login/`, {username: login, password: password})
             .then(res => {
                 const token = res.data.key;
                 const expirationDate = new Date(new Date().getTime() + EXPIRATION_TIME * 1000);

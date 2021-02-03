@@ -5,8 +5,9 @@ import Input from '../../components/dialog/controls/Input';
 
 import axios from 'axios';
 
+import * as enviroment from '../../enviroment';
 
-const serviceUrl = 'http://localhost:8000/api/guarded-objects/';
+const serviceUrl = `${enviroment.apiHost}/api/guarded-objects/`;
 
 export default function ObjectForm({ value, open, close, saveHandler }) {
     const [entity, changeEntity] = React.useState({})

@@ -11,7 +11,9 @@ import ld from 'lodash';
 import Table from "../../components/table/Table";
 import DevicesForm from "./DevicesForm";
 
-const serviceUrl = 'http://localhost:8000/api/devices/';
+import * as enviroment from '../../enviroment';
+
+const serviceUrl = `${enviroment.apiHost}/api/devices/`;
 
 export default function Devices() {
     const [editDialogOpen, setEditDialogOpen] = React.useState(false);
@@ -26,7 +28,7 @@ export default function Devices() {
     const onEditClick = (item) => {
         setEditingEntity(item);
 
-        axios.get('http://localhost:8000/api/guard-routes/')
+        axios.get(`${enviroment.apiHost}/api/guard-routes/`)
             .then(response => setGuardRoutes(response.data))
             .catch(error => alert(`Ошибка при загрузке списка охраняемых маршрутов: ${error}`));
 

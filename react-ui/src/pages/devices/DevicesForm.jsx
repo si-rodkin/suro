@@ -7,7 +7,9 @@ import PhoneInput from '../../components/dialog/controls/PhoneInput';
 
 import axios from 'axios';
 
-const serviceUrl = 'http://localhost:8000/api/devices/';
+import * as enviroment from '../../enviroment';
+
+const serviceUrl = `${enviroment.apiHost}/api/devices/`;
 
 export default function DevicesForm({ value, close, open, saveHandler, guardRoutes }) {
     const [entity, changeEntity] = React.useState({});

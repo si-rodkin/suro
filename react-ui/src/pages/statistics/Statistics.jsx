@@ -6,7 +6,9 @@ import moment from 'moment';
 
 import axios from 'axios';
 
-const serviceUrl = 'http://localhost:8000/api/commits/';
+import * as enviroment from '../../enviroment';
+
+const serviceUrl = `${enviroment.apiHost}/api/commits/`;
 
 const getColor = row => {
     const actualCommitTime = moment(row.date, 'hh:mm:ss');

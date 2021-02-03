@@ -7,6 +7,8 @@ import Input from '../../../components/dialog/controls/Input';
 
 import axios from 'axios';
 
+import * as enviroment from '../../../enviroment';
+
 export default function RoutesForm({ markers, objectId, value, close, open, saveHandler }) {
     const [entity, changeEntity] = React.useState({});
     const onChange = (name, value) => changeEntity({...entity, [name]: value});
@@ -14,7 +16,7 @@ export default function RoutesForm({ markers, objectId, value, close, open, save
     React.useEffect(() => changeEntity(value), [value]);
 
     const handleAccept = () => {
-        const apiUrl = 'http://localhost:8000/api/guard-routes/'
+        const apiUrl = `${enviroment.apiHost}/api/guard-routes/`
         const [method, url] = entity.id !== null ? ['PUT', `${apiUrl}${entity.id}/`] : ['POST', apiUrl];
 
         axios({

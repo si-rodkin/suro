@@ -8,11 +8,13 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Table from "../../../components/table/Table";
 import RoutesForm from './RoutesForm';
 
+import * as enviroment from '../../../enviroment';
+
 import axios from 'axios';
 import ld from 'lodash';
 
 export default function Routes(props) {
-    var serviceUrl = 'http://localhost:8000/api/guarded-objects/<objectId>/guard-routes/';
+    var serviceUrl = `${enviroment.apiHost}/api/guarded-objects/<objectId>/guard-routes/`;
     serviceUrl = serviceUrl.replace('<objectId>', `${props.match.params.objectId}`);
 
     const [editDialogOpen, setEditDialogOpen] = React.useState(false);
@@ -28,7 +30,7 @@ export default function Routes(props) {
         setEditingEntity(item);
         axios({
             method: 'GET',
-            url: `http://localhost:8000/api/markers/free-or/${item.id ? item.id : -1}`
+            url: `${enviroment.apiHost}/api/markers/free-or/${item.id ? item.id : -1}`
         })
             .then(({ data }) => setMarkers(data))
             .catch(error => alert(error));
@@ -41,7 +43,7 @@ export default function Routes(props) {
         if (confirmed) {
             setRows(rows.filter(row => row.id !== item.id));
             if (item.status !== 'new') {
-                axios.delete(`http://localhost:8000/api/guard-routes/${item.id}`)
+                axios.delete(`${enviroment.apiHost}/api/guard-routes/${item.id}`)
                     .catch(error => alert(`При удалении устройства ${item.name} произошла ошибка: ${error}`));
             }
         }

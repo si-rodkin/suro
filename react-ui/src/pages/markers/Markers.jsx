@@ -12,7 +12,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import axios from 'axios';
 
-const serviceUrl = 'http://localhost:8000/api/markers/';
+import * as enviroment from '../../enviroment';
+
+const serviceUrl = `${enviroment.apiHost}/api/markers/`;
 
 export default function Markers() {
     const [editDialogOpen, setEditDialogOpen] = React.useState(false);

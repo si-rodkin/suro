@@ -11,8 +11,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import axios from 'axios';
 import ld from 'lodash';
 
+import * as enviroment from '../../../enviroment';
+
 export default function Rounds(props) {
-    var serviceUrl = 'http://localhost:8000/api/markers/<markerId>/rounds/';
+    var serviceUrl = `${enviroment.apiHost}/api/markers/<markerId>/rounds/`;
     serviceUrl = serviceUrl.replace('<markerId>', `${props.match.params.markerId}`);
 
     const [editDialogOpen, setEditDialogOpen] = React.useState(false);
@@ -33,7 +35,7 @@ export default function Rounds(props) {
         if (window.confirm('Вы действительно хотите удалить этот элемент?')) {
             setRows(rows.filter(row => row.id !== item.id));
             if (item.status !== 'new') {
-                axios.delete(`http://localhost:8000/api/rounds/${item.id}`)
+                axios.delete(`${enviroment.apiHost}/api/rounds/${item.id}`)
                     .catch(error => alert(`При удалении устройства ${item.name} произошла ошибка: ${error}`));
             }
         }
@@ -51,7 +53,7 @@ export default function Rounds(props) {
 
         axios({
             method: 'GET',
-            url: 'http://localhost:8000/api/devices/'
+            url: `${enviroment.apiHost}/api/devices/`
         })
             .then(({ data }) => setDevices(data))
             .catch(error => alert(`Ошибка при загрузке списка устройств: ${error}`));
