@@ -1,11 +1,14 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, re_path, include
 
 import api.urls
-import web_site.urls
+
+from .views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls', namespace='api')),
-    path('', include('web_site.urls', namespace='web_site')),
+    path('api/', include('api.urls', namespace='api'))
+    # path('', index),
+    # path(r'devices/', index),
+    # re_path(r'^object\/((\w|\d)+\/)*$', index),
 ]

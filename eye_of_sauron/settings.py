@@ -10,6 +10,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+UI_APP_NAME = 'react-ui'
+UI_APP_DIR = os.path.join(BASE_DIR, UI_APP_NAME)
+UI_APP_BUILD_DIR = os.path.join(UI_APP_DIR, 'build')
+UI_APP_STATIC_DIR = os.path.join(UI_APP_BUILD_DIR, 'static')
+
+
+CORS_URLS_REGEX = r'^.*$'
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000"
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -18,19 +29,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'phonenumber_field',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'corsheaders',
 
     'api',
-    'web_site',
     'data_access'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -42,7 +55,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates')
+            UI_APP_BUILD_DIR
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -92,7 +105,20 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_DIRS = (
+    (UI_APP_STATIC_DIR),
+)
+
 PASSWORD_HASHING_ALGORITHM = sha3_256
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'api.serializers.CsrfExemptSessionAuthentication',
+    ]
+}
 
 AUTH_USER_MODEL = 'data_access.User'
 

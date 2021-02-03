@@ -7,4 +7,4 @@ class TheRingSerializer(ModelSerializer):
     """Сериализатор для модели охраняемого объекта"""
     class Meta:
         model = GuardedObject
-        fields = ['name', 'itn']
+        fields = ['id', 'name', 'itn']

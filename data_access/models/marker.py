@@ -8,7 +8,7 @@ class Marker(models.Model):
 
     name = models.CharField(verbose_name="Название маркера", max_length=50)
     rfid = models.CharField(verbose_name="Номер RFID-карты", max_length=10, blank=False, unique=True)
-    route = models.ForeignKey(GuardRoute, verbose_name="Маршрут", on_delete=models.SET_NULL, related_name="markers", null=True)
+    route = models.ForeignKey(GuardRoute, verbose_name="Маршрут", on_delete=models.SET_NULL, related_name="markers", blank=True, null=True)
 
     class Meta:
         verbose_name = "Маркер"

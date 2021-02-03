@@ -7,4 +7,5 @@ class GuardRouteSerializer(ModelSerializer):
     """Сериализатор для модели маршрута охраны"""
     class Meta:
         model = GuardRoute
-        fields = ['name', 'devices', 'markers', 'guard_object']
+        # fields = '__all__'
+        fields = ['id', 'name', 'guard_object', 'markers', 'devices']

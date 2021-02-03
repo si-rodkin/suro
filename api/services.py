@@ -34,9 +34,9 @@ def get_current_route(device_imei: str) -> str:
         {
             'marker_count': 3,
             'markers': [
-                { 'start_time': '10:10' },
-                { 'start_time': '12:10' },
-                { 'start_time': '14:10' }
+                { 'start_time': '10:10', 'id': '1' },
+                { 'start_time': '12:10', 'id': '2' },
+                { 'start_time': '14:10', 'id': '3' }
             ]
         }
     """
@@ -50,15 +50,17 @@ def get_current_route(device_imei: str) -> str:
     response['markers'] = []
     for marker in rounds:
         response['markers'].append({'start_time': str(marker.start_time)})
+        response['markers'].append({'id': str(marker.id)})
     return json.dumps(response)
 
 
-def read_commit(imei: str, rfid: str, hour: bytes, minute: bytes) -> []:
+def read_commit(imei: str, rfid: str, roundId: str, hour: bytes, minute: bytes) -> []:
     """Зафиксировать отметку маркера устройством
 
     Args:
         imei (str): IMEI устройства
         rfid (str): RFID посещенной метки
+        roundId (str): Идентификатор обхода
         hour (bytes): Час посещения метки в байтовом виде
         minute (bytes): Минуты посещения метки в байтовом виде
     """
@@ -66,6 +68,7 @@ def read_commit(imei: str, rfid: str, hour: bytes, minute: bytes) -> []:
     commit.marker = Marker.objects.get(rfid=rfid)
     commit.device = Device.objects.get(imei=imei)
     commit.date = time(from_byte(hour), from_byte(minute))
+    commit.round = Round.objects.get(pk = roundId)
     commit.save()
     return [to_byte(API_COMMANDS['ReadCommit'])]
 
