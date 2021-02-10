@@ -1,0 +1,1 @@
+export default (regexp, str) => regexp.test(str);

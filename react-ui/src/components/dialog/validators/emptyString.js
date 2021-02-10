@@ -1,0 +1,1 @@
+export default str => str === undefined || str === null || str.length === 0

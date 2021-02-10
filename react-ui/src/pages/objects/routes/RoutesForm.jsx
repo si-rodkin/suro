@@ -5,9 +5,15 @@ import { List, ListItem, ListItemIcon, Checkbox, ListItemText, Typography } from
 import Dialog from '../../../components/dialog/Dialog';
 import Input from '../../../components/dialog/controls/Input';
 
+import * as genValidators from '../../../components/dialog/validators';
+
 import axios from 'axios';
 
 import * as enviroment from '../../../enviroment';
+
+const validators = {
+    name: e => !genValidators.isEmpty(e.name)
+}
 
 export default function RoutesForm({ markers, objectId, value, close, open, saveHandler }) {
     const [entity, changeEntity] = React.useState({});
@@ -48,8 +54,9 @@ export default function RoutesForm({ markers, objectId, value, close, open, save
             open={open}
             close={close}
             accept={handleAccept}
+            disabled={() => Object.values(validators).filter(valid => !valid(entity)).length > 0}
         >
-            <Input label='Наименование' name='name' value={entity.name} onChange={onChange} />
+            <Input label='Наименование' name='name' value={entity.name} onChange={onChange} isValid={validators.name(entity)} />
             <Typography style={{ marginTop: '25px' }} component='h6'>
                 Маркеры
                 </Typography>

@@ -7,8 +7,8 @@ from .views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls', namespace='api'))
-    # path('', index),
+    path('api/', include('api.urls', namespace='api')),
+    re_path(r'^(?:.*)/?$', index)
     # path(r'devices/', index),
     # re_path(r'^object\/((\w|\d)+\/)*$', index),
 ]

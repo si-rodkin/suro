@@ -12,7 +12,7 @@ export default function Dialog({ title, children, open, close, accept, ...props 
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={close}>{props.closeLabel}</Button>
-                    <Button onClick={accept} color='primary'>{props.acceptLabel}</Button>
+                    <Button onClick={accept} color='primary' disabled={props.disabled()}>{props.acceptLabel} </Button>
                 </DialogActions>
             </div>
         </MuiDialog>
@@ -22,5 +22,6 @@ export default function Dialog({ title, children, open, close, accept, ...props 
 Dialog.defaultProps = {
     closeLabel: 'Закрыть',
     acceptLabel: 'Сохранить',
-    maxWidth: '600px'
+    maxWidth: '600px',
+    disabled: () => false
 }

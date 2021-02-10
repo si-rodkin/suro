@@ -5,16 +5,24 @@ import Dialog from '../../components/dialog/Dialog';
 import Input from '../../components/dialog/controls/Input';
 import PhoneInput from '../../components/dialog/controls/PhoneInput';
 
+import * as genValidators from '../../components/dialog/validators';
+
 import axios from 'axios';
 
 import * as enviroment from '../../enviroment';
 
 const serviceUrl = `${enviroment.apiHost}/api/devices/`;
 
+const validators = {
+    name: entity => !genValidators.isEmpty(entity),
+    imei: entity => genValidators.isMatch(/^\d{15}(,\d{15})*$/, entity.imei)
+}
+
 export default function DevicesForm({ value, close, open, saveHandler, guardRoutes }) {
     const [entity, changeEntity] = React.useState({});
     React.useEffect(() => changeEntity(value), [value]);
     const onChange = (name, value) => changeEntity({ ...entity, [name]: value })
+
 
     const routeClickHandle = (route) => {
         let routes = entity.guard_routes;
@@ -45,18 +53,19 @@ export default function DevicesForm({ value, close, open, saveHandler, guardRout
             open={open}
             close={close}
             accept={handleAccept}
+            disabled={() => Object.values(validators).filter(valid => !valid(entity)).length > 0}
         >
             <Input label='Название'
                 name='name'
                 value={entity.name}
                 onChange={onChange}
-                isValid={entity.name !== undefined && entity.name.length !== 0}
+                isValid={validators.name(entity)}
                 errorText='Название должно быть задано' />
             <Input label='IMEI'
                 name='imei'
                 value={entity.imei}
                 onChange={onChange}
-                isValid={/^\d{15}(,\d{15})*$/.test(entity.imei)}
+                isValid={validators.imei(entity)}
                 errorText='Введите корректный IMEI' />
             <PhoneInput label='Телефон' name='phone' value={entity.phone} onChange={onChange} />
 
