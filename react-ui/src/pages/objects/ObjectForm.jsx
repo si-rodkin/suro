@@ -33,7 +33,7 @@ export default function ObjectForm({ value, open, close, saveHandler }) {
     React.useEffect(() => changeEntity(value), [value]);
 
     return (
-        <Dialog title='Редактировать объект'
+        <Dialog title={`${entity.id? 'Изменить' : 'Добавить'} объект`}
             open={open}
             close={close}
             accept={handleAccept}

@@ -50,7 +50,7 @@ export default function RoutesForm({ markers, objectId, value, close, open, save
     }
 
     return (
-        <Dialog title='Изменить маршрут'
+        <Dialog title={`${entity.id? 'Изменить' : 'Добавить'} маршрут`}
             open={open}
             close={close}
             accept={handleAccept}

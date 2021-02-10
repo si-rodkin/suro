@@ -49,7 +49,7 @@ export default function DevicesForm({ value, close, open, saveHandler, guardRout
 
 
     return (
-        <Dialog title='Редактировать устройство'
+        <Dialog title={`${entity.id? 'Изменить' : 'Добавить'} устройство`}
             open={open}
             close={close}
             accept={handleAccept}

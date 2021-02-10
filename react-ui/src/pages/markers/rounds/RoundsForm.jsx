@@ -42,7 +42,7 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
     }
 
     return (
-        <Dialog title='Редактировать устройство'
+        <Dialog title={`${entity.id? 'Изменить' : 'Добавить'} устройство`}
             open={open}
             close={close}
             accept={handleAccept}
