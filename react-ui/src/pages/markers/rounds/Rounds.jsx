@@ -35,7 +35,7 @@ export default function Rounds(props) {
         if (window.confirm('Вы действительно хотите удалить этот элемент?')) {
             setRows(rows.filter(row => row.id !== item.id));
             if (item.status !== 'new') {
-                axios.delete(`${enviroment.apiHost}/api/rounds/${item.id}`)
+                axios.delete(`${enviroment.apiHost}/api/rounds/${item.id}/`)
                     .catch(error => alert(`При удалении устройства ${item.name} произошла ошибка: ${error}`));
             }
         }

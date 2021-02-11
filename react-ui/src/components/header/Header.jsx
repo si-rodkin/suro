@@ -19,6 +19,13 @@ import PasswordInput from '../dialog/controls/PasswordInput';
 // import logo from './logo.svg';
 import './Header.css';
 
+import * as genValidators from '../dialog/validators';
+
+const validators = {
+    username: credentials => !genValidators.isEmpty(credentials.username),
+    password: credentials => !genValidators.isEmpty(credentials.password) && credentials.password.length > 5
+}
+
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -92,18 +99,19 @@ function Header(props) {
                         accept={authHandle}
                         acceptLabel='Войти'
                         maxWidth='400px'
+                        disabled={() => Object.values(validators).filter(valid => !valid(credentials)).length > 0}
                     >
                         <Input
                             label='Логин'
                             name='username'
                             onChange={handleCredentialsChange}
-                            isValid={props.authError === null}
+                            isValid={props.authError === null && validators.username(credentials)}
                             errorText='Логин или пароль не верен' />
                         <PasswordInput
                             label='Пароль'
                             name='password'
                             onChange={handleCredentialsChange}
-                            isValid={props.authError === null}
+                            isValid={props.authError === null && validators.password(credentials)}
                             errorText='Логин или пароль не верен' />
                     </Dialog>
                 </Toolbar>

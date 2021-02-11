@@ -43,7 +43,7 @@ export default function Routes(props) {
         if (confirmed) {
             setRows(rows.filter(row => row.id !== item.id));
             if (item.status !== 'new') {
-                axios.delete(`${enviroment.apiHost}/api/guard-routes/${item.id}`)
+                axios.delete(`${enviroment.apiHost}/api/guard-routes/${item.id}/`)
                     .catch(error => alert(`При удалении устройства ${item.name} произошла ошибка: ${error}`));
             }
         }

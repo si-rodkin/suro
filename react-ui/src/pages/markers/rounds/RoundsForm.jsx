@@ -55,6 +55,8 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
             <Input label='Время допуска' name='time_allowance' type='number' value={entity.time_allowance} onChange={onChange} isValid={validators.timeAllowance(entity)} />
             <Input label='Время опоздания' name='late_time' type='number' value={entity.late_time} onChange={onChange} isValid={validators.lateTime(entity)} />
 
+            {/* TODO: вынести в отдельный компонент. Необходимые пропертя:
+                    id, label, value, onChange, options, isValid,  */}
             <FormControl variant="outlined" style={{ margin: '8px 0', width: '100%' }}>
                 <InputLabel htmlFor="device-select">Устройство</InputLabel>
                 <Select

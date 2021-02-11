@@ -17,7 +17,7 @@ const validators = {
 
 export default function RoutesForm({ markers, objectId, value, close, open, saveHandler }) {
     const [entity, changeEntity] = React.useState({});
-    const onChange = (name, value) => changeEntity({...entity, [name]: value});
+    const onChange = (name, value) => changeEntity({ ...entity, [name]: value });
 
     React.useEffect(() => changeEntity(value), [value]);
 
@@ -50,13 +50,18 @@ export default function RoutesForm({ markers, objectId, value, close, open, save
     }
 
     return (
-        <Dialog title={`${entity.id? 'Изменить' : 'Добавить'} маршрут`}
+        <Dialog title={`${entity.id ? 'Изменить' : 'Добавить'} маршрут`}
             open={open}
             close={close}
             accept={handleAccept}
             disabled={() => Object.values(validators).filter(valid => !valid(entity)).length > 0}
         >
-            <Input label='Наименование' name='name' value={entity.name} onChange={onChange} isValid={validators.name(entity)} />
+            <Input label='Наименование'
+                name='name'
+                value={entity.name}
+                onChange={onChange}
+                isValid={validators.name(entity)}
+                errorText='Введите наименование' />
             <Typography style={{ marginTop: '25px' }} component='h6'>
                 Маркеры
                 </Typography>

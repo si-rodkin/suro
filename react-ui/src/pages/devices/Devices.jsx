@@ -41,7 +41,7 @@ export default function Devices() {
         if (confirmed) {
             setRows(rows.filter(row => row.id !== item.id));
             if (item.status !== 'new') {
-                axios.delete(`${serviceUrl}${item.id}`)
+                axios.delete(`${serviceUrl}${item.id}/`)
                     .catch(error => alert(`При удалении устройства ${item.name} произошла ошибка: ${error}`));
             }
         }

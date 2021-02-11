@@ -44,13 +44,11 @@ def read_free_markers(request, routeId):
 
 
 class DeviceView(ListCreateAPIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
 
 
 class DeviceDetailView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
 
@@ -60,49 +58,41 @@ class DeviceDetailView(RetrieveUpdateDestroyAPIView):
 
 
 class MarkerView(ListCreateAPIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = Marker.objects.all()
     serializer_class = MarkerSerializer
 
 
 class MarkerDetailView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = Marker.objects.all()
     serializer_class = MarkerSerializer
 
 
 class TheRingView(ListCreateAPIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = GuardedObject.objects.all()
     serializer_class = TheRingSerializer
 
 
 class TheRingDetailView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = GuardedObject.objects.all()
     serializer_class = TheRingSerializer
 
 
 class GuardRouteView(ListCreateAPIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = GuardRoute.objects.all()
     serializer_class = GuardRouteSerializer
 
 
 class GuardRouteDetailView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = GuardRoute.objects.all()
     serializer_class = GuardRouteSerializer
 
 
 class RoundView(ListCreateAPIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = Round.objects.all()
     serializer_class = RoundSerializer
 
 
 class RoundDetail(RetrieveUpdateDestroyAPIView):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = Round.objects.all()
     serializer_class = RoundSerializer
 
