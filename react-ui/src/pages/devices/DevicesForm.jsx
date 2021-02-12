@@ -51,22 +51,41 @@ export default function DevicesForm({ value, close, open, saveHandler, guardRout
     return (
         <Dialog title={`${entity.id? 'Изменить' : 'Добавить'} устройство`}
             open={open}
-            close={close}
-            accept={handleAccept}
-            disabled={() => Object.values(validators).filter(valid => !valid(entity)).length > 0}
+            buttons={[
+                {
+                    label: 'Закрыть',
+                    action: close,
+                },
+                {
+                    label: 'Сохранить',
+                    action: handleAccept,
+                    color: 'primary',
+                    disabled: () => Object.values(validators).filter(valid => !valid(entity)).length > 0
+                }
+            ]}
         >
             <Input label='Название'
                 name='name'
                 value={entity.name}
                 onChange={onChange}
-                isValid={validators.name(entity)}
-                errorText='Название должно быть задано' />
+                validators={[
+                    {
+                        validate: () => validators.name(entity),
+                        message: 'Введите название устройства'
+                    },
+                ]}
+            />
             <Input label='IMEI'
                 name='imei'
                 value={entity.imei}
                 onChange={onChange}
-                isValid={validators.imei(entity)}
-                errorText='Введите корректный IMEI' />
+                validators={[
+                    {
+                        validate: () => validators.imei(entity),
+                        message: 'Введите корректный IMEI'
+                    },
+                ]}
+            />
             <PhoneInput label='Телефон' name='phone' value={entity.phone} onChange={onChange} />
 
             <Typography style={{ marginTop: '25px' }} component='h6'>

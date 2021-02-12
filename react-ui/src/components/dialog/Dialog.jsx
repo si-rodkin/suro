@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Dialog as MuiDialog, DialogTitle, DialogActions, DialogContent, Button } from '@material-ui/core';
 
-export default function Dialog({ title, children, open, close, accept, ...props }) {
+export default function Dialog({ title, children, open, ...props }) {
     return (
         <MuiDialog open={open}>
             <div style={{ maxWidth: props.maxWidth }}>
@@ -11,8 +11,9 @@ export default function Dialog({ title, children, open, close, accept, ...props 
                     {children}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={close}>{props.closeLabel}</Button>
-                    <Button onClick={accept} color='primary' disabled={props.disabled()}>{props.acceptLabel} </Button>
+                    {props.buttons.map(button => (
+                        <Button onClick={button.action} disabled={button.disabled? button.disabled() : false} color={button.color}>{button.label}</Button>
+                    ))}
                 </DialogActions>
             </div>
         </MuiDialog>
@@ -20,8 +21,17 @@ export default function Dialog({ title, children, open, close, accept, ...props 
 }
 
 Dialog.defaultProps = {
-    closeLabel: 'Закрыть',
-    acceptLabel: 'Сохранить',
+    buttons: [
+        {
+            label: 'Закрыть',
+            action: () => window.alert('Переопределите кнопку!')
+        },
+        {
+            label: 'Сохранить',
+            action: () => window.alert('Переопределите кнопку!'),
+            color: 'primary'
+        }
+    ],
     maxWidth: '600px',
     disabled: () => false
 }

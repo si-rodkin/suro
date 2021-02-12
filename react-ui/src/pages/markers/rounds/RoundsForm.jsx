@@ -17,11 +17,10 @@ const timeRegexp = /\d{2}:\d{2}(:\d{2})?/;
 
 const validators = {
     name: e => !genValidators.isEmpty(e.name),
-    days: e => !genValidators.isEmpty(e.days),
     startTime: e => genValidators.isMatch(timeRegexp, e.start_time),
     endTime: e => genValidators.isEmpty(e.end_time) || genValidators.isMatch(timeRegexp, e.end_time),
-    timeAllowance: e => genValidators.isMatch(/\d+/, e.time_allowance),
-    lateTime: e => genValidators.isMatch(/\d+/, e.late_time),
+    timeAllowance: e => genValidators.isMatch(/\d+/, e.time_allowance) && Number(e.time_allowance) >= 0,
+    lateTime: e => genValidators.isMatch(/\d+/, e.late_time) && Number(e.late_time) >= 0,
 }
 
 export default function RoundsForm({ value, close, open, saveHandler, devices }) {
@@ -42,18 +41,88 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
     }
 
     return (
-        <Dialog title={`${entity.id? 'Изменить' : 'Добавить'} устройство`}
+        <Dialog title={`${entity.id ? 'Изменить' : 'Добавить'} устройство`}
             open={open}
-            close={close}
-            accept={handleAccept}
-            disabled={() => Object.values(validators).filter(valid => !valid(entity)).length > 0}
+            buttons={[
+                {
+                    label: 'Закрыть',
+                    action: close,
+                },
+                {
+                    label: 'Сохранить',
+                    action: handleAccept,
+                    color: 'primary',
+                    disabled: () => Object.values(validators).filter(valid => !valid(entity)).length > 0
+                }
+            ]}
         >
-            <Input label='Название' name='name' value={entity.name} onChange={onChange} isValid={validators.name(entity)} />
-            <Input label='Дни обхода' name='days' value={entity.days} onChange={onChange} isValid={validators.days(entity)} />
-            <Input label='Начало обхода' name='start_time' type='time' value={entity.start_time} onChange={onChange} isValid={validators.startTime(entity)} />
-            <Input label='Конец обхода' name='end_time' type='time' value={entity.end_time} onChange={onChange} isValid={validators.endTime(entity)} />
-            <Input label='Время допуска' name='time_allowance' type='number' value={entity.time_allowance} onChange={onChange} isValid={validators.timeAllowance(entity)} />
-            <Input label='Время опоздания' name='late_time' type='number' value={entity.late_time} onChange={onChange} isValid={validators.lateTime(entity)} />
+            <Input label='Название'
+                name='name'
+                value={entity.name}
+                onChange={onChange}
+                validators={[
+                    {
+                        validate: () => validators.name(entity),
+                        message: 'Введите название'
+                    },
+                ]}
+            />
+            <Input // TODO: заменить на select
+                label='Дни обхода'
+                name='days'
+                value={entity.days}
+                onChange={onChange}
+            />
+            <Input
+                label='Начало обхода'
+                name='start_time'
+                type='time'
+                value={entity.start_time}
+                onChange={onChange}
+                validators={[
+                    {
+                        validate: () => validators.startTime(entity),
+                        message: 'Заполните время начала обхода'
+                    },
+                ]}
+            />
+            <Input
+                label='Конец обхода'
+                name='end_time'
+                type='time'
+                value={entity.end_time}
+                onChange={onChange}
+                validators={[
+                    {
+                        validate: () => validators.endTime(entity),
+                        message: 'Введите верное время конца обхода'
+                    },
+                ]}
+            />
+            <Input label='Время допуска'
+                name='time_allowance'
+                type='number'
+                value={entity.time_allowance}
+                onChange={onChange}
+                validators={[
+                    {
+                        validate: () => validators.timeAllowance(entity),
+                        message: 'Введите корректное время допуска'
+                    },
+                ]}
+            />
+            <Input label='Время опоздания'
+                name='late_time'
+                type='number'
+                value={entity.late_time}
+                onChange={onChange}
+                validators={[
+                    {
+                        validate: () => validators.lateTime(entity),
+                        message: 'Введите корректное время опоздания'
+                    },
+                ]}
+            />
 
             {/* TODO: вынести в отдельный компонент. Необходимые пропертя:
                     id, label, value, onChange, options, isValid,  */}

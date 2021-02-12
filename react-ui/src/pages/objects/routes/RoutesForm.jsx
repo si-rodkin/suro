@@ -52,16 +52,30 @@ export default function RoutesForm({ markers, objectId, value, close, open, save
     return (
         <Dialog title={`${entity.id ? 'Изменить' : 'Добавить'} маршрут`}
             open={open}
-            close={close}
-            accept={handleAccept}
-            disabled={() => Object.values(validators).filter(valid => !valid(entity)).length > 0}
+            buttons={[
+                {
+                    label: 'Закрыть',
+                    action: close,
+                },
+                {
+                    label: 'Сохранить',
+                    action: handleAccept,
+                    color: 'primary',
+                    disabled: () => Object.values(validators).filter(valid => !valid(entity)).length > 0
+                }
+            ]}
         >
             <Input label='Наименование'
                 name='name'
                 value={entity.name}
                 onChange={onChange}
-                isValid={validators.name(entity)}
-                errorText='Введите наименование' />
+                validators={[
+                    {
+                        validate: () => validators.name(entity),
+                        message: 'Введите наименование маршрута'
+                    },
+                ]}
+            />
             <Typography style={{ marginTop: '25px' }} component='h6'>
                 Маркеры
                 </Typography>

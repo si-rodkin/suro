@@ -19,11 +19,14 @@ import PasswordInput from '../dialog/controls/PasswordInput';
 // import logo from './logo.svg';
 import './Header.css';
 
+import Notifications from '../notifications/Notifications';
+import UserMenu from '../user_menu/UserMenu';
+
 import * as genValidators from '../dialog/validators';
 
 const validators = {
-    username: credentials => !genValidators.isEmpty(credentials.username),
-    password: credentials => !genValidators.isEmpty(credentials.password) && credentials.password.length > 5
+    username: ({username}) => !genValidators.isEmpty(username),
+    password: ({password}) => !genValidators.isEmpty(password) && password.length > 5
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -41,8 +44,6 @@ const useStyles = makeStyles((theme) => ({
 function Header(props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
-
-    const [authDialogOpen, setAuthDialogOpen] = React.useState(false);
     const [credentials, updateCredentials] = React.useState({ username: undefined, password: undefined });
 
     const handleCredentialsChange = (name, value) => updateCredentials({ ...credentials, [name]: value });
@@ -87,32 +88,56 @@ function Header(props) {
 
                     {
                         !props.isAuthenticated ?
-                            <Button color='inherit' onClick={() => setAuthDialogOpen(true)}>Войти</Button>
+                            <Button color='inherit'>Войти</Button>
                             :
-                            // TODO: Аватар польщователя
-                            <Button color='inherit' onClick={() => props.onUnauth()}>Выйти</Button>
+                            <>
+                                <Notifications />
+                                <UserMenu />
+                            </>
                     }
 
                     <Dialog title='Авторизация'
-                        open={authDialogOpen && !props.isAuthenticated}
-                        close={() => setAuthDialogOpen(false)}
-                        accept={authHandle}
-                        acceptLabel='Войти'
+                        open={!props.isAuthenticated}
+                        buttons={[
+                            {
+                                label: 'Войти',
+                                action: authHandle,
+                                color: 'primary',
+                                disabled: () => Object.values(validators).filter(validate => !validate(credentials)).length > 0
+                            }
+                        ]}
                         maxWidth='400px'
-                        disabled={() => Object.values(validators).filter(valid => !valid(credentials)).length > 0}
                     >
                         <Input
                             label='Логин'
                             name='username'
                             onChange={handleCredentialsChange}
-                            isValid={props.authError === null && validators.username(credentials)}
-                            errorText='Логин или пароль не верен' />
+                            validators={[
+                                {
+                                    validate: () => props.authError === null,
+                                    message: 'Логин или пароль не верен'
+                                },
+                                {
+                                    validate: () => validators.username(credentials),
+                                    message: 'Поле должно быть заполнено!'
+                                }]
+                            }
+                        />
                         <PasswordInput
                             label='Пароль'
                             name='password'
                             onChange={handleCredentialsChange}
-                            isValid={props.authError === null && validators.password(credentials)}
-                            errorText='Логин или пароль не верен' />
+                            validators={[
+                                {
+                                    validate: () => props.authError === null,
+                                    message: 'Логин или пароль не верен'
+                                },
+                                {
+                                    validate: () => validators.password(credentials),
+                                    message: 'Пароль должен сожержать не менее 6 символов!'
+                                }]
+                            }
+                        />
                     </Dialog>
                 </Toolbar>
             </Container>

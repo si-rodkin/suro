@@ -35,23 +35,42 @@ export default function ObjectForm({ value, open, close, saveHandler }) {
     return (
         <Dialog title={`${entity.id? 'Изменить' : 'Добавить'} объект`}
             open={open}
-            close={close}
-            accept={handleAccept}
-            disabled={() => Object.values(validators).filter(valid => !valid(entity)).length > 0}
+            buttons={[
+                {
+                    label: 'Закрыть',
+                    action: close,
+                },
+                {
+                    label: 'Сохранить',
+                    action: handleAccept,
+                    color: 'primary',
+                    disabled: () => Object.values(validators).filter(valid => !valid(entity)).length > 0
+                }
+            ]}
         >
             <Input label='Название'
                 name='name'
                 value={entity.name}
                 onChange={onChange}
-                isValid={validators.name(entity)}
-                errorText='Не задано название' />
+                validators={[
+                    {
+                        validate: () => validators.name(entity),
+                        message: 'Не задано название'
+                    },
+                ]}
+            />
             <Input
                 label='ИНН'
                 name='itn'
                 value={entity.itn}
                 onChange={onChange}
-                isValid={validators.itn(entity)}
-                errorText='Введите корректный ИНН' />
+                validators={[
+                    {
+                        validate: () => validators.itn(entity),
+                        message: 'Введите корректный ИНН'
+                    },
+                ]}
+            />
         </Dialog>
     )
 }

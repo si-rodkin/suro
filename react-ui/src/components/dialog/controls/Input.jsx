@@ -2,11 +2,20 @@ import { TextField } from '@material-ui/core'
 import React from 'react'
 
 
-export default function Input({ label, name, value, onChange, type = 'text', isValid = () => true, errorText = '' }) {
+export default function Input({ label, name, value, onChange, type = 'text', validators = [] }) {
     const handleOnChange = e => {
         const { name, value } = e.target;
         onChange(name, value);
     }
+
+    const [isValid, message] = (() => {
+        for (const validator of validators) {
+            if (!validator.validate()) {
+                return [false, validator.message];
+            }
+        }
+        return [true, ''];
+    })();
 
     return (
         <TextField style={{ margin: '8px 0' }}
@@ -18,6 +27,6 @@ export default function Input({ label, name, value, onChange, type = 'text', isV
             label={label}
             onChange={handleOnChange}
 
-            {...(!isValid && { error: true, helperText: errorText })} />
+            {...(!isValid && { error: !isValid, helperText: message })} />
     )
 }
