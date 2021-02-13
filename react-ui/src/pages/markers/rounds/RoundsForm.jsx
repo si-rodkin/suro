@@ -1,15 +1,15 @@
 import React from 'react'
 
-import { InputLabel, Select, FormControl } from "@material-ui/core";
-
 import Dialog from '../../../components/dialog/Dialog';
 import Input from '../../../components/dialog/controls/Input';
+import SelectInput from '../../../components/dialog/controls/Select';
 
 import * as genValidators from '../../../components/dialog/validators';
 
 import axios from 'axios';
 
 import * as enviroment from '../../../enviroment';
+import { weekDays } from '../../../utils/dictionaries';
 
 const serviceUrl = `${enviroment.apiHost}/api/rounds/`;
 
@@ -67,27 +67,15 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
                     },
                 ]}
             />
-            <FormControl variant="outlined" style={{ margin: '8px 0', width: '100%' }}>
-                <InputLabel htmlFor="day-select">День обхода</InputLabel>
-                <Select
-                    native
-                    value={entity.days}
-                    onChange={onSelectChange}
-                    label='День обхода'
-                    name='days'
-                    inputProps={{
-                        id: 'day-select',
-                    }}
-                >
-                    <option value='1'>Понедельник</option>
-                    <option value='2'>Вторник</option>
-                    <option value='3'>Среда</option>
-                    <option value='4'>Четверг</option>
-                    <option value='5'>Пятница</option>
-                    <option value='6'>Суббота</option>
-                    <option value='7'>Воскресенье</option>
-                </Select>
-            </FormControl>
+
+            <SelectInput id='day-select'
+                label='День обхода'
+                name='days'
+                value={entity.days}
+                onChange={onSelectChange}
+                options={weekDays.map((day, index) => { return { id: index, name: day }; })}
+            />
+
             <Input
                 label='Начало обхода'
                 name='start_time'
@@ -104,6 +92,7 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
                     shrink: true,
                 }}
             />
+
             <Input
                 label='Конец обхода'
                 name='end_time'
@@ -120,6 +109,7 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
                     shrink: true,
                 }}
             />
+
             <Input label='Время допуска'
                 name='time_allowance'
                 type='number'
@@ -132,6 +122,7 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
                     },
                 ]}
             />
+
             <Input label='Время опоздания'
                 name='late_time'
                 type='number'
@@ -145,27 +136,13 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
                 ]}
             />
 
-            {/* TODO: вынести в отдельный компонент. Необходимые пропертя:
-                    id, label, value, onChange, options, isValid,  */}
-            <FormControl variant="outlined" style={{ margin: '8px 0', width: '100%' }}>
-                <InputLabel htmlFor="device-select">Устройство</InputLabel>
-                <Select
-                    native
-                    value={entity.device}
-                    onChange={onSelectChange}
-                    label='Устройство'
-                    name='device'
-                    inputProps={{
-                        id: 'device-select',
-                    }}
-                >
-                    {devices.map(device => {
-                        return (
-                            <option value={device.id}>{device.name}</option>
-                        )
-                    })}
-                </Select>
-            </FormControl>
+            <SelectInput id='device-select'
+                label='Устройство'
+                name='device'
+                value={entity.device}
+                onChange={onSelectChange}
+                options={devices.map(device => {return { id: device.id, name: device.name }})}
+            />
         </Dialog>
     )
 }

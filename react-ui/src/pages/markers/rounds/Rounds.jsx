@@ -12,6 +12,7 @@ import axios from 'axios';
 import ld from 'lodash';
 
 import * as enviroment from '../../../enviroment';
+import { weekDays } from '../../../utils/dictionaries';
 
 export default function Rounds(props) {
     var serviceUrl = `${enviroment.apiHost}/api/markers/<markerId>/rounds/`;
@@ -68,7 +69,7 @@ export default function Rounds(props) {
             <Table
                 header={(<>
                     <TableCell>Название</TableCell>
-                    <TableCell align="center">Дни обхода</TableCell>
+                    <TableCell align="center">День обхода</TableCell>
                     <TableCell align="center">Начало обхода</TableCell>
                     <TableCell align="center">Конец обхода</TableCell>
                     <TableCell align="center">Время допуска</TableCell>
@@ -77,7 +78,7 @@ export default function Rounds(props) {
                 rows={rows.map((row) => (
                     <TableRow key={row.name}>
                         <TableCell scope="row">{row.name}</TableCell>
-                        <TableCell align="center">{row.days}</TableCell>
+                        <TableCell align="center">{weekDays[row.days]}</TableCell>
                         <TableCell align="center">{row.start_time}</TableCell>
                         <TableCell align="center">{row.end_time}</TableCell>
                         <TableCell align="center">{row.time_allowance}</TableCell>
