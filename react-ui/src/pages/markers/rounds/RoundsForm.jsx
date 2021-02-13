@@ -67,12 +67,27 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
                     },
                 ]}
             />
-            <Input // TODO: заменить на select
-                label='Дни обхода'
-                name='days'
-                value={entity.days}
-                onChange={onChange}
-            />
+            <FormControl variant="outlined" style={{ margin: '8px 0', width: '100%' }}>
+                <InputLabel htmlFor="day-select">День обхода</InputLabel>
+                <Select
+                    native
+                    value={entity.days}
+                    onChange={onSelectChange}
+                    label='День обхода'
+                    name='days'
+                    inputProps={{
+                        id: 'day-select',
+                    }}
+                >
+                    <option value='1'>Понедельник</option>
+                    <option value='2'>Вторник</option>
+                    <option value='3'>Среда</option>
+                    <option value='4'>Четверг</option>
+                    <option value='5'>Пятница</option>
+                    <option value='6'>Суббота</option>
+                    <option value='7'>Воскресенье</option>
+                </Select>
+            </FormControl>
             <Input
                 label='Начало обхода'
                 name='start_time'

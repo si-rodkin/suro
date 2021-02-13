@@ -1,6 +1,14 @@
 import { TextField } from '@material-ui/core'
 import React from 'react'
 
+const validateField = validators => {
+    for (const validator of validators) {
+        if (!validator.validate()) {
+            return [false, validator.message];
+        }
+    }
+    return [true, ''];
+};
 
 export default function Input({ label, name, value, onChange, type = 'text', validators = [] }) {
     const handleOnChange = e => {
@@ -8,14 +16,7 @@ export default function Input({ label, name, value, onChange, type = 'text', val
         onChange(name, value);
     }
 
-    const [isValid, message] = (() => {
-        for (const validator of validators) {
-            if (!validator.validate()) {
-                return [false, validator.message];
-            }
-        }
-        return [true, ''];
-    })();
+    const [isValid, message] = validateField(validators);
 
     return (
         <TextField style={{ margin: '8px 0' }}

@@ -77,8 +77,8 @@ export default function Devices() {
                         <TableCell align="center">{row.imei}</TableCell>
                         <TableCell align="center">{row.phone}</TableCell>
                         <TableCell align="right">
-                            <Button onClick={() => onEditClick(row)}><Edit /></Button>
-                            <Button onClick={() => onDeleteClick(row)}><DeleteIcon /></Button>
+                            <Button onClick={() => onEditClick(row)}><Edit color='action' /></Button>
+                            <Button onClick={() => onDeleteClick(row)}><DeleteIcon color='secondary' /></Button>
                         </TableCell>
                     </TableRow>
                 ))} />

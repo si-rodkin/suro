@@ -45,7 +45,7 @@ function UserMenu(props) {
                 onClose={() => setAnchor(undefined)}
             >
                 <MenuItem><Link style={linkStyle} href='/user/profile'>Профиль</Link></MenuItem>
-                <MenuItem><Button onClick={handleUnauthClick}>Выход</Button></MenuItem>
+                <MenuItem><Link style={linkStyle} onClick={handleUnauthClick}>Выход</Link></MenuItem>
             </Menu>
         </div>
     )

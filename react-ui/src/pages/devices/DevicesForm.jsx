@@ -14,8 +14,9 @@ import * as enviroment from '../../enviroment';
 const serviceUrl = `${enviroment.apiHost}/api/devices/`;
 
 const validators = {
-    name: entity => !genValidators.isEmpty(entity),
-    imei: entity => genValidators.isMatch(/^\d{15}(,\d{15})*$/, entity.imei)
+    name: entity => !genValidators.isEmpty(entity.name),
+    imei: entity => genValidators.isMatch(/^\d{15}(,\d{15})*$/, entity.imei),
+    phone: entity => genValidators.isPhone(entity.phone)
 }
 
 export default function DevicesForm({ value, close, open, saveHandler, guardRoutes }) {
@@ -49,7 +50,7 @@ export default function DevicesForm({ value, close, open, saveHandler, guardRout
 
 
     return (
-        <Dialog title={`${entity.id? 'Изменить' : 'Добавить'} устройство`}
+        <Dialog title={`${entity.id ? 'Изменить' : 'Добавить'} устройство`}
             open={open}
             buttons={[
                 {
@@ -86,7 +87,17 @@ export default function DevicesForm({ value, close, open, saveHandler, guardRout
                     },
                 ]}
             />
-            <PhoneInput label='Телефон' name='phone' value={entity.phone} onChange={onChange} />
+            <PhoneInput label='Телефон'
+                name='phone'
+                value={entity.phone}
+                onChange={onChange}
+                validators={[
+                    {
+                        validate: () => validators.phone(entity),
+                        message: 'Введите корректный номер телефона'
+                    }
+                ]}
+            />
 
             <Typography style={{ marginTop: '25px' }} component='h6'>
                 Маршруты

@@ -12,9 +12,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import axios from 'axios';
 
+import * as genValidators from '../../components/dialog/validators';
 import * as enviroment from '../../enviroment';
 
 const serviceUrl = `${enviroment.apiHost}/api/markers/`;
+
+const validators = {
+    name: ({ name }) => !genValidators.isEmpty(name)
+}
 
 export default function Markers() {
     const [editDialogOpen, setEditDialogOpen] = React.useState(false);
@@ -47,7 +52,7 @@ export default function Markers() {
     const handleAccept = () => {
         axios({
             method: 'PUT',
-            url: `${serviceUrl}${editingEntity.id}`,
+            url: `${serviceUrl}${editingEntity.id}/`,
             data: editingEntity
         })
             .then(({ data }) => {
@@ -82,17 +87,38 @@ export default function Markers() {
                         <TableCell scope="row">{row.name}</TableCell>
                         <TableCell align="right">{row.route ? row.route : ''}</TableCell>
                         <TableCell align="right">
-                            <Button onClick={() => onEditClick(row)}><Edit /></Button>
-                            <Button onClick={() => onDeleteClick(row)}><DeleteIcon /></Button>
+                            <Button onClick={() => onEditClick(row)}><Edit color='action' /></Button>
+                            <Button onClick={() => onDeleteClick(row)}><DeleteIcon color='secondary' /></Button>
                             <Menu markerId={row.id} />
                         </TableCell>
                     </TableRow>
                 ))} />
             <Dialog title='Редактировать маркер'
                 open={editDialogOpen}
-                close={() => setEditDialogOpen(false)}
-                accept={handleAccept}>
-                <Input label='Название' value={editingEntity.name} onChange={onChange} />
+                buttons={[
+                    {
+                        label: 'Закрыть',
+                        action: () => setEditDialogOpen(false),
+                    },
+                    {
+                        label: 'Сохранить',
+                        action: handleAccept,
+                        color: 'primary',
+                        disabled: () => Object.values(validators).filter(valid => !valid(editingEntity)).length > 0
+                    }
+                ]}
+            >
+                <Input label='Название'
+                    value={editingEntity.name}
+                    name='name'
+                    onChange={onChange}
+                    validators={[
+                        {
+                            validate: () => validators.name(editingEntity),
+                            message: 'Заполните название точки'
+                        }
+                    ]}
+                />
             </Dialog>
         </Container>
     )

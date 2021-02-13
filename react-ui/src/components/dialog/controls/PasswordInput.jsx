@@ -4,23 +4,24 @@ import { TextField, IconButton } from '@material-ui/core'
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
+const validateField = validators => {
+    for (const validator of validators) {
+        if (!validator.validate()) {
+            return [false, validator.message];
+        }
+    }
+    return [true, ''];
+};
+
 export default function PasswordInput({ label, name, value, onChange, validators = [] }) {
     const [showPassword, setShowPassword] = React.useState(false);
-    const [error, setError] = React.useState({state: false, message: ''});
 
     const handleOnChange = e => {
         const {name, value} = e.target;
         onChange(name, value);
     }
 
-    const [isValid, message] = (() => {
-        for (const validator of validators) {
-            if (!validator.validate()) {
-                return [false, validator.message];
-            }
-        }
-        return [true, ''];
-    })();
+    const [isValid, message] = validateField(validators);
 
     return (
         <TextField style={{ margin: '8px 0' }}

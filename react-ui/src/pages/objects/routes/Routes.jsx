@@ -73,8 +73,8 @@ export default function Routes(props) {
                     <TableRow key={row.name}>
                         <TableCell scope="row">{row.name}</TableCell>
                         <TableCell align="right">
-                            <Button onClick={() => onEditClick(row)}><Edit /></Button>
-                            <Button onClick={() => onDeleteClick(row)}><DeleteIcon /></Button>
+                            <Button onClick={() => onEditClick(row)}><Edit color='action' /></Button>
+                            <Button onClick={() => onDeleteClick(row)}><DeleteIcon color='secondary' /></Button>
                         </TableCell>
                     </TableRow>
                 ))} />
