@@ -10,7 +10,7 @@ const validateField = validators => {
     return [true, ''];
 };
 
-export default function Input({ label, name, value, onChange, type = 'text', validators = [] }) {
+export default function Input({ label, name, value, onChange, type = 'text', validators = [], InputLabelProps = {} }) {
     const handleOnChange = e => {
         const { name, value } = e.target;
         onChange(name, value);
@@ -27,6 +27,7 @@ export default function Input({ label, name, value, onChange, type = 'text', val
             value={value}
             label={label}
             onChange={handleOnChange}
+            InputLabelProps={InputLabelProps}
 
             {...(!isValid && { error: !isValid, helperText: message })} />
     )

@@ -100,6 +100,9 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
                         message: 'Заполните время начала обхода'
                     },
                 ]}
+                InputLabelProps={{
+                    shrink: true,
+                }}
             />
             <Input
                 label='Конец обхода'
@@ -113,6 +116,9 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
                         message: 'Введите верное время конца обхода'
                     },
                 ]}
+                InputLabelProps={{
+                    shrink: true,
+                }}
             />
             <Input label='Время допуска'
                 name='time_allowance'
