@@ -19,7 +19,7 @@ import PasswordInput from '../dialog/controls/PasswordInput';
 // import logo from './logo.svg';
 import './Header.css';
 
-import Notifications from '../notifications/Notifications';
+import Trey from '../trey/Trey';
 import UserMenu from '../user_menu/UserMenu';
 
 import * as genValidators from '../dialog/validators';
@@ -64,8 +64,8 @@ function Header(props) {
         <AppBar position='static'>
             <Container>
                 <Toolbar>
-                    <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu'>
-                        <MenuIcon onClick={handleMenuIconClick} />
+                    <IconButton onClick={handleMenuIconClick} edge='start' className={classes.menuButton} color='inherit' aria-label='menu'>
+                        <MenuIcon />
                     </IconButton>
                     {props.isAuthenticated && (<>
                         <Menu
@@ -91,7 +91,7 @@ function Header(props) {
                             <Button color='inherit'>Войти</Button>
                             :
                             <>
-                                <Notifications />
+                                <Trey />
                                 <UserMenu />
                             </>
                     }

@@ -7,13 +7,12 @@ class User(DjangoUserModel):
     """
     Модель пользователя системы
     """
-    personnel_number = models.IntegerField(verbose_name="Табельный номер", null=False, blank=False, unique=True,
-                                           primary_key=True)
-    patr_name = models.CharField(verbose_name="Отчество", max_length=32)
+    personnel_number = models.IntegerField(verbose_name="Табельный номер", null=False, blank=False, unique=True)
+    patr_name = models.CharField(verbose_name="Отчество", max_length=32, null=True, blank=True)
     position = models.CharField(verbose_name="Должность", null=False, blank=False, max_length=128)
     phone = PhoneNumberField(verbose_name="Телефонный номер", null=False, blank=False, unique=True, db_index=True)
-    timezone = models.CharField(verbose_name="Часовой пояс", null=False, blank=False, max_length=32)
-    avatar = models.ImageField(verbose_name="Аватар пользователя")
+    timezone = models.CharField(verbose_name="Часовой пояс", null=False, blank=False, max_length=32, default="Europe/Moscow")
+    avatar = models.ImageField(verbose_name="Аватар пользователя", null=True, blank=True)
 
     class Meta:
         verbose_name = "Пользователь системы"

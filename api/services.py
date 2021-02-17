@@ -10,13 +10,13 @@ def get_current_datetime() -> str:
 
     Returns:
         str: json-структура с полем time, содержащем время сервера
-    
+
     Example:
         {
             'time': '2020-11-07 10:39:31.347083'
         }
     """
-    response = { 'time': str(datetime.now()) }
+    response = {'time': str(datetime.now())}
     return json.dumps(response)
 
 
@@ -29,7 +29,7 @@ def get_current_route(device_imei: str) -> str:
 
     Returns:
         str: json-структура, содержащее поле marker_count (кол-во маркеров) и поле markers: массив времен
-    
+
     Example:
         {
             'marker_count': 3,
@@ -44,7 +44,8 @@ def get_current_route(device_imei: str) -> str:
     now = datetime.now()
     limit = now + timedelta(hours=1)
 
-    rounds = Round.objects.filter(device__imei=device_imei).filter(days=limit.isoweekday()).filter(start_time__gte=now).filter(start_time__lte=limit)
+    rounds = Round.objects.filter(device__imei=device_imei).filter(
+        days=limit.isoweekday()).filter(start_time__gte=now).filter(start_time__lte=limit)
 
     response['marker_count'] = len(rounds)
     response['markers'] = []
@@ -68,7 +69,7 @@ def read_commit(imei: str, rfid: str, roundId: str, hour: bytes, minute: bytes) 
     commit.marker = Marker.objects.get(rfid=rfid)
     commit.device = Device.objects.get(imei=imei)
     commit.date = time(from_byte(hour), from_byte(minute))
-    commit.round = Round.objects.get(pk = roundId)
+    commit.round = Round.objects.get(pk=roundId)
     commit.save()
     return [to_byte(API_COMMANDS['ReadCommit'])]
 

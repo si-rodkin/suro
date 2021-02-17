@@ -1,11 +1,14 @@
 import React from 'react'
 
-import { Avatar, Badge } from '@material-ui/core';
+import { Badge, makeStyles } from '@material-ui/core';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 
+import './Trey.css';
+
 function Notifications() {
+
     return (
-        <div style={{marginRight: '15px'}} >
+        <div className='TreyIcon' >
             <Badge>
                 <NotificationsIcon />
             </Badge>

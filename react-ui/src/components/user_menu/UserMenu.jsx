@@ -10,6 +10,7 @@ import * as enviroment from '../../enviroment';
 import Avatar from '@material-ui/core/Avatar';
 import { Menu, MenuItem, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import UserProfile from '../../pages/users/profile/UserProfile';
 
 const linkStyle = {
     color: 'black',
@@ -17,6 +18,7 @@ const linkStyle = {
 }
 
 function UserMenu(props) {
+    const [profileOpen, setProfileOpen] = React.useState(false);
     const [anchor, setAnchor] = React.useState(undefined);
 
     // TODO: почитать про хук мемоизации в реакте
@@ -26,6 +28,8 @@ function UserMenu(props) {
         if (confirmed)
             props.onUnauth();
     }
+
+    const handleProfileOpen = () => setProfileOpen(true);
 
     React.useEffect(() => {
         axios.get(`${enviroment.apiHost}/api/user/`, {
@@ -44,10 +48,17 @@ function UserMenu(props) {
                 open={Boolean(anchor)}
                 onClose={() => setAnchor(undefined)}
             >
-                <MenuItem><Link style={linkStyle} href='/user/profile'>Профиль</Link></MenuItem>
-                <MenuItem><Link style={linkStyle} onClick={handleUnauthClick}>Выход</Link></MenuItem>
+                <MenuItem onClick={handleProfileOpen}><Link style={linkStyle}>Профиль</Link></MenuItem>
+                <MenuItem><Link style={linkStyle}>Параметры организации</Link></MenuItem>
+                <MenuItem><Link style={linkStyle}>Параметры безопасности</Link></MenuItem>
+                <MenuItem onClick={handleUnauthClick}><Link style={linkStyle}>Выход</Link></MenuItem>
             </Menu>
-        </div>
+
+            <UserProfile
+                open={profileOpen}
+                close={() => setProfileOpen(false)}
+            />
+        </div >
     )
 }
 

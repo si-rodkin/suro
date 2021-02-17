@@ -4,11 +4,13 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.renderers import JSONRenderer
 
-from data_access.models import Device, Marker, GuardedObject, GuardRoute, Round, Commit
+from data_access.models import Device, Marker, GuardedObject, GuardRoute, Round, Commit, User
 from . import services
-from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, GuardRouteSerializer, RoundSerializer, CommitSerializer, CsrfExemptSessionAuthentication
+from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, GuardRouteSerializer, RoundSerializer, CommitSerializer, UserSerializer, CsrfExemptSessionAuthentication
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication 
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authtoken.models import Token
+
 
 def get_current_route(request, imei) -> HttpResponse:
     return HttpResponse(services.get_current_route(imei))
@@ -37,10 +39,17 @@ def read_marker_rounds(request, markerId):
 
 
 def read_free_markers(request, routeId):
-    markers = Marker.objects.filter(route=None) | Marker.objects.filter(route__id=routeId)
+    markers = Marker.objects.filter(
+        route=None) | Marker.objects.filter(route__id=routeId)
     serializer = MarkerSerializer(data=markers, many=True)
     serializer.is_valid()
     return HttpResponse(JSONRenderer().render(serializer.data))
+
+
+def user_data(request: HttpResponse):
+    user = Token.objects.get(key=request.headers['authorization']).user
+    serialiser = UserSerializer(user)
+    return HttpResponse(JSONRenderer().render(serialiser.data))
 
 
 class DeviceView(ListCreateAPIView):
@@ -100,3 +109,13 @@ class RoundDetail(RetrieveUpdateDestroyAPIView):
 class CommitView(ListAPIView):
     queryset = Commit.objects.all()
     serializer_class = CommitSerializer
+
+
+class UserView(ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
