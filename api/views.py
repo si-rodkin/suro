@@ -5,7 +5,11 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.renderers import JSONRenderer
 
 from data_access.models import Device, Marker, GuardedObject, GuardRoute, Round, Commit, User
+
 from . import services
+# FIXME
+from . import _services
+
 from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, GuardRouteSerializer, RoundSerializer, CommitSerializer, UserSerializer, CsrfExemptSessionAuthentication
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -17,11 +21,11 @@ def get_current_route(request, imei) -> HttpResponse:
 
 
 def get_current_datetime(request) -> HttpResponse:
-    return HttpResponse(services.get_current_datetime())
+    return HttpResponse(_services.get_current_datetime())
 
 
 def read_commit(requst, imei: str, rfid: str, roundId: str) -> HttpResponse:
-    return HttpResponse(services.read_commit(imei, rfid, roundId, requst.body[1], requst.body[2]))
+    return HttpResponse(_services.read_commit(imei, rfid, roundId, requst.body[0], requst.body[1]))
 
 
 def read_object_routes(request, objectId):

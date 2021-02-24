@@ -1,1 +1,2 @@
-from .api_service_tests import APIServiceTest
+
+from .round_selection_tests import DeviceRoundSelectionTest

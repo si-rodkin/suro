@@ -19,42 +19,6 @@ def get_current_datetime() -> str:
     response = {'time': str(datetime.now())}
     return json.dumps(response)
 
-
-def get_current_route(device_imei: str) -> str:
-    """Вернуть маркеры, которые должны быть пройдены данным устройством
-    в течении следующих 30ти минут
-
-    Args:
-        device_imei (str): IMEI запрашивающего устройства
-
-    Returns:
-        str: json-структура, содержащее поле marker_count (кол-во маркеров) и поле markers: массив времен
-
-    Example:
-        {
-            'marker_count': 3,
-            'markers': [
-                { 'start_time': '10:10', 'id': '1' },
-                { 'start_time': '12:10', 'id': '2' },
-                { 'start_time': '14:10', 'id': '3' }
-            ]
-        }
-    """
-    response = {}
-    now = datetime.now()
-    limit = now + timedelta(hours=1)
-
-    rounds = Round.objects.filter(device__imei=device_imei).filter(
-        days=limit.isoweekday()).filter(start_time__gte=now).filter(start_time__lte=limit)
-
-    response['marker_count'] = len(rounds)
-    response['markers'] = []
-    for marker in rounds:
-        response['markers'].append({'start_time': str(marker.start_time)})
-        response['markers'].append({'id': str(marker.id)})
-    return json.dumps(response)
-
-
 def read_commit(imei: str, rfid: str, roundId: str, hour: bytes, minute: bytes) -> []:
     """Зафиксировать отметку маркера устройством
 
