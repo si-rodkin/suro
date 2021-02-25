@@ -21,6 +21,8 @@ const validators = {
     endTime: e => genValidators.isEmpty(e.end_time) || genValidators.isMatch(timeRegexp, e.end_time),
     timeAllowance: e => genValidators.isMatch(/\d+/, e.time_allowance) && Number(e.time_allowance) >= 0,
     lateTime: e => genValidators.isMatch(/\d+/, e.late_time) && Number(e.late_time) >= 0,
+    device: e => !genValidators.isEmpty(e.device),
+    days: e => !genValidators.isEmpty(e.days),
 }
 
 export default function RoundsForm({ value, close, open, saveHandler, devices }) {
@@ -37,7 +39,7 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
         }).then(({ data }) => {
             saveHandler(data);
             close();
-        }).catch((error) => alert('Ошибка при выполнении операции: ' + error));
+        }).catch((error) => alert('Ошибка при выполнении операции: ' + error.data));
     }
 
     return (
@@ -74,6 +76,12 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
                 value={entity.days}
                 onChange={onSelectChange}
                 options={weekDays.map((day, index) => { return { id: index, name: day }; })}
+                validators={[
+                    {
+                        validate: () => validators.days(entity),
+                        message: 'Выберите день обхода'
+                    }
+                ]}
             />
 
             <Input
@@ -142,6 +150,13 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
                 value={entity.device}
                 onChange={onSelectChange}
                 options={devices.map(device => {return { id: device.id, name: device.name }})}
+
+                validators={[
+                    {
+                        validate: () => validators.device(entity),
+                        message: 'Выберите устройство обхода'
+                    }
+                ]}
             />
         </Dialog>
     )
