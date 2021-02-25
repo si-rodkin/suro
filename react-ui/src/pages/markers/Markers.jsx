@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Container } from '@material-ui/core';
+import { Button, Container, DialogContentText } from '@material-ui/core';
 import { TableCell, TableRow } from '@material-ui/core';
 
 import Table from "../../components/table/Table";
@@ -21,11 +21,26 @@ const validators = {
     name: ({ name }) => !genValidators.isEmpty(name)
 }
 
-export default function Markers() {
+export default function Markers(props) {
     const [editDialogOpen, setEditDialogOpen] = React.useState(false);
     const [editingEntity, setEditingEntity] = React.useState({});
+    const [createMarkerModeOn, setCreateMarkerMode] = React.useState(false);
 
     const onChange = (name, value) => setEditingEntity({ ...editingEntity, [name]: value });
+
+    console.log(props)
+
+    const switchCreateMarkerMode = () => {
+        axios.post(`${enviroment.apiHost}/api/switch-marker-check-mode/`)
+            .then(() => setCreateMarkerMode(!createMarkerModeOn))
+            .catch(error => alert(error));
+        axios({
+            method: 'GET',
+            url: serviceUrl
+        })
+            .then(({ data }) => setRows(data))
+            .catch(error => alert(error));
+    }
 
     const replaceEntity = (entity) => {
         let entityInRows = !!rows.filter(row => row.id === entity.id).length;
@@ -71,11 +86,21 @@ export default function Markers() {
         })
             .then(({ data }) => setRows(data))
             .catch(error => alert(error));
+
+        return () => {
+            if (createMarkerModeOn) {
+                switchCreateMarkerMode();
+            }
+        }
     }, []);
+
 
     return (
         <Container>
             <h1>Маркеры: </h1>
+            <Container style={{ display: 'flex', paddingRight: 0, justifyContent: 'end' }}>
+                <Button variant='contained' color='primary' onClick={switchCreateMarkerMode}>Добавить</Button>
+            </Container>
             <Table
                 header={(
                     <><TableCell>Название</TableCell>
@@ -120,6 +145,21 @@ export default function Markers() {
                     ]}
                 />
             </Dialog>
+
+            <Dialog title='Включен режим добавления маркера'
+                open={createMarkerModeOn}
+                buttons={[
+                    {
+                        label: 'Закончить добавление',
+                        action: switchCreateMarkerMode,
+                        color: 'primary'
+                    }
+                ]}>
+                <DialogContentText>
+                    Считайте маркер для добавления
+                </DialogContentText>
+            </Dialog>
+
         </Container>
     )
 }

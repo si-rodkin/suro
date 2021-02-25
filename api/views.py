@@ -15,6 +15,12 @@ from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.authtoken.models import Token
 
+create_marker_mode = False
+
+def switch_create_marker_mode(request):
+    global create_marker_mode
+    create_marker_mode = True if create_marker_mode is False else False
+    return HttpResponse(str(create_marker_mode))
 
 def get_current_route(request, imei) -> HttpResponse:
     return HttpResponse(services.get_current_route(imei))
@@ -25,6 +31,11 @@ def get_current_datetime(request) -> HttpResponse:
 
 
 def read_commit(requst, imei: str, rfid: str, roundId: str) -> HttpResponse:
+    global create_marker_mode
+    if create_marker_mode is True:
+        marker = Marker.objects.create(name="", rfid=rfid, route=None)
+        serializer = MarkerSerializer(marker)
+        return HttpResponse(JSONRenderer().render(serializer.data))
     return HttpResponse(_services.read_commit(imei, rfid, roundId, requst.body[0], requst.body[1]))
 
 

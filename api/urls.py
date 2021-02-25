@@ -5,11 +5,13 @@ from api.views import DeviceView, MarkerView, TheRingView, \
         UserView, UserDetailView
 
 from api.views import get_current_route, get_current_datetime, read_commit, \
-    read_object_routes, read_marker_rounds, read_free_markers, user_data
+    read_object_routes, read_marker_rounds, read_free_markers, user_data, switch_create_marker_mode
 
 app_name = 'api'
 
 urlpatterns = [
+    path('switch-marker-check-mode/', switch_create_marker_mode),
+
     path('rest-auth/', include('rest_auth.urls')),
 
     path('sync/date/', get_current_datetime),
