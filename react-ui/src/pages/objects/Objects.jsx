@@ -57,7 +57,7 @@ export default function Objects() {
     return (
         <Container>
             <h1>Объекты: </h1>
-            <Container style={{ display: 'flex', paddingRight: 0, justifyContent: 'end' }}>
+            <Container style={{ display: 'flex', paddingRight: 0, justifyContent: 'flex-end' }}>
                 <Button variant='contained'
                         color='primary'
                         onClick={() => onEditClick({id: null, name: '', itn: ''})}>Добавить</Button>
