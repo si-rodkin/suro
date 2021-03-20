@@ -7,6 +7,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import Table from "../../../components/table/Table";
 import RoutesForm from './RoutesForm';
+import RouteMenu from './Menu';
 
 import * as enviroment from '../../../enviroment';
 
@@ -75,6 +76,7 @@ export default function Routes(props) {
                         <TableCell align="right">
                             <Button onClick={() => onEditClick(row)}><Edit color='action' /></Button>
                             <Button onClick={() => onDeleteClick(row)}><DeleteIcon color='secondary' /></Button>
+                            <RouteMenu routeId={row.id} />
                         </TableCell>
                     </TableRow>
                 ))} />

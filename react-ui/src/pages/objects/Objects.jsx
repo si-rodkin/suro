@@ -74,7 +74,7 @@ export default function Objects() {
                         <TableCell align="right">
                             <Button onClick={() => onEditClick(row)}><Edit color='action' /></Button>
                             <Button onClick={() => onDeleteClick(row)}><DeleteIcon color='secondary' /></Button>
-                            <ObjectMenu objectId={row.id} />         
+                            <ObjectMenu objectId={row.id} />
                         </TableCell>
                     </TableRow>
                 ))} />

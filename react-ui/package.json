@@ -13,6 +13,7 @@
     "lodash": "^4.17.20",
     "material-ui-phone-number": "^2.2.6",
     "moment": "^2.29.1",
+    "qs": "^6.10.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-promise-tracker": "^2.1.0",

@@ -10,6 +10,7 @@ import Menu from './Menu';
 import Edit from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import qs from 'qs';
 import axios from 'axios';
 
 import * as genValidators from '../../components/dialog/validators';
@@ -22,13 +23,12 @@ const validators = {
 }
 
 export default function Markers(props) {
+    const [routeId, setRouteId] = React.useState(NaN);
     const [editDialogOpen, setEditDialogOpen] = React.useState(false);
     const [editingEntity, setEditingEntity] = React.useState({});
     const [createMarkerModeOn, setCreateMarkerMode] = React.useState(false);
 
     const onChange = (name, value) => setEditingEntity({ ...editingEntity, [name]: value });
-
-    console.log(props)
 
     const switchCreateMarkerMode = () => {
         axios.post(`${enviroment.apiHost}/api/switch-marker-check-mode/`)
@@ -80,6 +80,8 @@ export default function Markers(props) {
     const [rows, setRows] = React.useState([]);
 
     React.useEffect(() => {
+        setRouteId(Number(qs.parse(props.location.search,  { ignoreQueryPrefix: true }).route));
+
         axios({
             method: 'GET',
             url: serviceUrl
@@ -108,9 +110,9 @@ export default function Markers(props) {
                         <TableCell></TableCell></>
                 )}
                 rows={rows.map((row) => (
-                    <TableRow key={row.name}>
+                    <TableRow key={row.name} style={{backgroundColor: (!isNaN(routeId) && (row.route === null || row.route.id !== routeId))? "whitesmoke" : "white",}} >
                         <TableCell scope="row">{row.name}</TableCell>
-                        <TableCell align="right">{row.route ? row.route : ''}</TableCell>
+                        <TableCell align="right">{row.route ? row.route.name : '-'}</TableCell>
                         <TableCell align="right">
                             <Button onClick={() => onEditClick(row)}><Edit color='action' /></Button>
                             <Button onClick={() => onDeleteClick(row)}><DeleteIcon color='secondary' /></Button>
