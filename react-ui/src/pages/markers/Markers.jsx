@@ -81,7 +81,9 @@ export default function Markers(props) {
 
     React.useEffect(() => {
         setRouteId(Number(qs.parse(props.location.search,  { ignoreQueryPrefix: true }).route));
+    }, [props.location.search])
 
+    React.useEffect(() => {
         axios({
             method: 'GET',
             url: serviceUrl

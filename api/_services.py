@@ -13,10 +13,11 @@ def get_current_datetime() -> str:
 
     Example:
         {
-            'time': '2020-11-07 10:39:31.347083'
+            'time': '2020-11-07 10:39:31.347083',
+            'weekday': '1'
         }
     """
-    response = {'time': str(datetime.now())}
+    response = {'time': str(datetime.now()), 'weekday': str(datetime.now().weekday())}
     return json.dumps(response)
 
 def read_commit(imei: str, rfid: str, roundId: str, hour: bytes, minute: bytes) -> []:
