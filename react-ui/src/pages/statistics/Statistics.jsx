@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core';
+import { TableCell, TableRow } from '@material-ui/core';
 import { Container } from '@material-ui/core';
 
 import moment from 'moment';
 
 import axios from 'axios';
+
+import Table from '../../components/table/Table';
 
 import * as enviroment from '../../enviroment';
 
@@ -17,7 +19,7 @@ const getColor = row => {
     const lateTime = Number(row.round.late_time);
 
     const diff = actualCommitTime.diff(planningCommitTime, 'minutes');
-        
+
     if (diff <= allowanceTime) {
         return 'lightgreen';
     }
@@ -37,35 +39,28 @@ export default function Statistics() {
             method: 'GET',
             url: serviceUrl
         })
-        .then(({data}) => setRows(data))
-        .catch(error => console.log(error));
+            .then(({ data }) => setRows(data))
+            .catch(error => console.log(error));
     }, []);
 
     return (
         <Container>
             <h1>Статистика обходов: </h1>
-            <TableContainer component={Paper}>
-                <Table aria-label="a dense table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Дата и время обхода факт.</TableCell>
-                            <TableCell>Заданные дата и время обхода</TableCell>
-                            <TableCell>Номер метки</TableCell>
-                            <TableCell>Имя устройства</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.name} style={{backgroundColor: getColor(row)}}>
-                                <TableCell>{row.date}</TableCell>
-                                <TableCell>{row.round.start_time}</TableCell>
-                                <TableCell>{row.marker.name}</TableCell>
-                                <TableCell>{row.device.name}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <Table
+                header={(<>
+                    <TableCell>Дата и время обхода факт.</TableCell>
+                    <TableCell>Заданные дата и время обхода</TableCell>
+                    <TableCell>Номер метки</TableCell>
+                    <TableCell>Имя устройства</TableCell></>
+                )}
+                rows={rows.map((row) => (
+                    <TableRow key={row.name} style={{ backgroundColor: getColor(row) }}>
+                        <TableCell>{row.date}</TableCell>
+                        <TableCell>{row.round.start_time}</TableCell>
+                        <TableCell>{row.marker.name}</TableCell>
+                        <TableCell>{row.device.name}</TableCell>
+                    </TableRow>
+                ))} />
         </Container>
     )
 }
