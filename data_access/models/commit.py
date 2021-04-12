@@ -10,7 +10,7 @@ class Commit(models.Model):
     round = models.ForeignKey(Round, on_delete=models.CASCADE)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     marker = models.ForeignKey(Marker, on_delete=models.CASCADE)
-    date = models.TimeField(verbose_name="Дата обмена информацией")
+    date = models.DateTimeField(verbose_name="Дата обмена информацией")
 
     class Meta:
         verbose_name = "Синхронизация с устройством"

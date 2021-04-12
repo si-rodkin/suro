@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, time, timedelta
+from datetime import datetime, timedelta
 
 from data_access.models import Device, Commit, Marker, GuardRoute, Round
 from eye_of_sauron.settings import BYTEORDER, API_COMMANDS
@@ -20,20 +20,19 @@ def get_current_datetime() -> str:
     response = {'time': str(datetime.now()), 'weekday': str(datetime.now().weekday())}
     return json.dumps(response)
 
-def read_commit(imei: str, rfid: str, roundId: str, hour: bytes, minute: bytes) -> []:
+def read_commit(imei: str, rfid: str, roundId: str, body) -> []:
     """Зафиксировать отметку маркера устройством
 
     Args:
         imei (str): IMEI устройства
         rfid (str): RFID посещенной метки
         roundId (str): Идентификатор обхода
-        hour (bytes): Час посещения метки в байтовом виде
-        minute (bytes): Минуты посещения метки в байтовом виде
+        body (bytes): 5 байт даты-времени в формате (чч мм дд ММ гг)
     """
     commit = Commit()
     commit.marker = Marker.objects.get(rfid=rfid)
     commit.device = Device.objects.get(imei=imei)
-    commit.date = time(from_byte(hour), from_byte(minute))
+    commit.date = datetime(year=from_byte(body[4]), month=from_byte(body[3]), day=from_byte(body[2]), hour=from_byte(body[1]), minute=from_byte(body[0]))
     commit.round = Round.objects.get(pk=roundId)
     commit.save()
     return [to_byte(API_COMMANDS['ReadCommit'])]

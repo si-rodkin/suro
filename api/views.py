@@ -36,7 +36,7 @@ def read_commit(requst, imei: str, rfid: str, roundId: str) -> HttpResponse:
         marker = Marker.objects.create(name="", rfid=rfid, route=None)
         serializer = MarkerSerializer(marker)
         return HttpResponse(JSONRenderer().render(serializer.data))
-    return HttpResponse(_services.read_commit(imei, rfid, roundId, requst.body[0], requst.body[1]))
+    return HttpResponse(_services.read_commit(imei, rfid, roundId, requst.body[0], requst.body))
 
 
 def read_object_routes(request, objectId):

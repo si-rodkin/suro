@@ -13,7 +13,7 @@ import * as enviroment from '../../enviroment';
 const serviceUrl = `${enviroment.apiHost}/api/commits/`;
 
 const getColor = row => {
-    const actualCommitTime = moment(row.date, 'hh:mm:ss');
+    const actualCommitTime = moment(row.date);
     const planningCommitTime = moment(row.round.start_time, 'hh:mm:ss');
     const allowanceTime = Number(row.round.time_allowance);
     const lateTime = Number(row.round.late_time);
@@ -55,7 +55,7 @@ export default function Statistics() {
                 )}
                 rows={rows.map((row) => (
                     <TableRow key={row.name} style={{ backgroundColor: getColor(row) }}>
-                        <TableCell>{row.date}</TableCell>
+                        <TableCell>{moment(row.date).format("hh:mm:ss DD-MM-yy")}</TableCell>
                         <TableCell>{row.round.start_time}</TableCell>
                         <TableCell>{row.marker.name}</TableCell>
                         <TableCell>{row.device.name}</TableCell>
