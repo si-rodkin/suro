@@ -49,8 +49,8 @@ function UserMenu(props) {
                 onClose={() => setAnchor(undefined)}
             >
                 <MenuItem onClick={handleProfileOpen}><Link style={linkStyle}>Профиль</Link></MenuItem>
-                <MenuItem><Link style={linkStyle}>Параметры организации</Link></MenuItem>
-                <MenuItem><Link style={linkStyle}>Параметры безопасности</Link></MenuItem>
+                {/* <MenuItem><Link style={linkStyle}>Параметры организации</Link></MenuItem>
+                <MenuItem><Link style={linkStyle}>Параметры безопасности</Link></MenuItem> */}
                 <MenuItem onClick={handleUnauthClick}><Link style={linkStyle}>Выход</Link></MenuItem>
             </Menu>
 
