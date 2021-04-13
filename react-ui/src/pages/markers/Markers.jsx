@@ -2,6 +2,10 @@ import React from "react";
 import { Button, Container, DialogContentText } from '@material-ui/core';
 import { TableCell, TableRow } from '@material-ui/core';
 
+import {
+    Link
+} from 'react-router-dom';
+
 import Table from "../../components/table/Table";
 import Dialog from '../../components/dialog/Dialog';
 import Input from '../../components/dialog/controls/Input';
@@ -103,6 +107,7 @@ export default function Markers(props) {
         <Container>
             <h1>Маркеры: </h1>
             <Container style={{ display: 'flex', paddingRight: 0, justifyContent: 'flex-end' }}>
+                <Link className='App-link' to={`/markers/0/rounds`}><Button variant='contained' color='secondary' style={{marginRight: '10px'}}>Начала обходов</Button></Link>
                 <Button variant='contained' color='primary' onClick={switchCreateMarkerMode}>Добавить</Button>
             </Container>
             <Table

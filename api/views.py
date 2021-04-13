@@ -47,6 +47,7 @@ def read_object_routes(request, objectId):
 
 
 def read_marker_rounds(request, markerId):
+    markerId = markerId if markerId != 0 else None
     rounds = Round.objects.filter(marker__id=markerId)
     serializer = RoundSerializer(data=rounds, many=True)
     serializer.is_valid()

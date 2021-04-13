@@ -43,7 +43,7 @@ export default function RoundsForm({ value, close, open, saveHandler, devices })
     }
 
     return (
-        <Dialog title={`${entity.id ? 'Изменить' : 'Добавить'} устройство`}
+        <Dialog title={`${entity.id ? 'Изменить' : 'Добавить'} обход`}
             open={open}
             buttons={[
                 {

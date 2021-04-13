@@ -20,25 +20,35 @@ def get_current_route(device_imei: str) -> str:
         {
             'marker_count': 3,
             'markers': [
-                { 'start_time': '10:10', 'id': '1' },
-                { 'start_time': '12:10', 'id': '2' },
-                { 'start_time': '14:10', 'id': '3' }
+                { 'start_time': '10:10', 'id': '1', 'name': 'Угол 1' },
+                { 'start_time': '12:10', 'id': '2', 'name': 'Угол 2' },
+                { 'start_time': '14:10', 'id': '3', 'name': 'Угол 3' }
+            ],
+            round_begins: [
+                {'start_time': '10:00'}
             ]
         }
     """
 
-    rounds = _get_device_rounds(device_imei)
+    nearest_rounds = _get_device_nearest_rounds(device_imei)
+    round_begins = _get_device_rounds_begins(device_imei)
 
     response = {}
-    response['marker_count'] = len(rounds)
+    response['marker_count'] = len(nearest_rounds)
     response['markers'] = []
-    for marker in rounds:
+    response['round_begins'] = []
+    for marker in nearest_rounds:
         response['markers'].append({'start_time': str(marker.start_time)})
         response['markers'].append({'id': str(marker.id)})
+        response['markers'].append({'name': marker.marker.name})
+
+    for round_begin in round_begins:
+        response['round_begins'].append({'start_time': str(round_begin.start_time)})
+
     return json.dumps(response)
 
 
-def _get_device_rounds(imei: str):
+def _get_device_nearest_rounds(imei: str):
     now = datetime.now()
     limit = now + timedelta(hours=1)
 
@@ -46,6 +56,15 @@ def _get_device_rounds(imei: str):
     rounds = Round.objects\
         .filter(device=device.id)\
         .filter(Q(days=(limit.isoweekday() - 1)) | Q(days=limit.isoweekday()))\
-        .filter(Q(start_time__gte=now) & Q(start_time__lte=limit))
+        .filter(Q(start_time__gte=now) & Q(start_time__lte=limit))\
+        .exclude(marker=None)
 
     return list(rounds)
+
+
+def _get_device_rounds_begins(imei):
+    device = Device.objects.get(imei=imei)
+    return list(Round.objects
+                .filter(device=device.id)
+                .filter(marker=None)
+                .filter(days=(datetime.now().isoweekday() - 1)))

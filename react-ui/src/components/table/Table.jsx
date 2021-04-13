@@ -1,6 +1,12 @@
-import React from 'react'
+import * as React from 'react'
 
 import { Table as MuiTable, TableBody, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@material-ui/core';
+
+const labelDisplayedRows = ({ from, to, count }) => {
+    return `${from}-${to} из ${count}`;
+}
+
+const labelRowsPerPage = 'Элементов на странице';
 
 export default function Table({ header, rows }) {
     const [page, setPage] = React.useState(0);
@@ -35,6 +41,8 @@ export default function Table({ header, rows }) {
                 page={page}
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
+                labelDisplayedRows={labelDisplayedRows}
+                labelRowsPerPage={labelRowsPerPage}
             />
         </TableContainer>
     )

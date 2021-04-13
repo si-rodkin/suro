@@ -15,6 +15,8 @@ import * as enviroment from '../../../enviroment';
 import { weekDays } from '../../../utils/dictionaries';
 
 export default function Rounds(props) {
+    const markerId = props.match.params.markerId == "0"? null : props.match.params.markerId;
+
     var serviceUrl = `${enviroment.apiHost}/api/markers/<markerId>/rounds/`;
     serviceUrl = serviceUrl.replace('<markerId>', `${props.match.params.markerId}`);
 
@@ -64,7 +66,7 @@ export default function Rounds(props) {
         <Container>
             <h1>Обходы: </h1>
             <Container style={{ display: 'flex', paddingRight: 0, justifyContent: 'flex-end' }}>
-                <Button variant='contained' color='primary' onClick={() => onEditClick({ id: null, marker: props.match.params.markerId })}>Добавить</Button>
+                <Button variant='contained' color='primary' onClick={() => onEditClick({ id: null, marker: markerId })}>Добавить</Button>
             </Container>
             <Table
                 header={(<>

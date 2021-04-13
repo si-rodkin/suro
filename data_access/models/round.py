@@ -13,7 +13,7 @@ class Round(models.Model):
     time_allowance = models.IntegerField(verbose_name="Время допуска")
     late_time = models.IntegerField(verbose_name="Время опоздания")
 
-    marker = models.ForeignKey(Marker, verbose_name="Маркер", on_delete=models.CASCADE, related_name="rounds")
+    marker = models.ForeignKey(Marker, verbose_name="Маркер", on_delete=models.CASCADE, related_name="rounds", null=True)
     device = models.ForeignKey(Device, verbose_name="Устройство", on_delete=models.CASCADE, related_name="rounds")
 
     class Meta:
