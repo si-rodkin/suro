@@ -19,6 +19,7 @@ def get_current_route(device_imei: str) -> str:
     Example:
         {
             'marker_count': 3,
+            'begins_count': 1,
             'markers': [
                 { 'start_time': '10:10', 'id': '1', 'name': 'Угол 1' },
                 { 'start_time': '12:10', 'id': '2', 'name': 'Угол 2' },
@@ -35,12 +36,16 @@ def get_current_route(device_imei: str) -> str:
 
     response = {}
     response['marker_count'] = len(nearest_rounds)
+    response['begins_count'] = len(round_begins)
     response['markers'] = []
     response['round_begins'] = []
     for marker in nearest_rounds:
-        response['markers'].append({'start_time': str(marker.start_time)})
-        response['markers'].append({'id': str(marker.id)})
-        response['markers'].append({'name': marker.marker.name})
+        response['markers'].append({
+            'start_time': str(marker.start_time),
+            'id': str(marker.id),
+            'name': marker.marker.name
+        })
+
 
     for round_begin in round_begins:
         response['round_begins'].append({'start_time': str(round_begin.start_time)})
