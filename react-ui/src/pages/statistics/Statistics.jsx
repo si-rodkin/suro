@@ -14,7 +14,7 @@ const serviceUrl = `${enviroment.apiHost}/api/commits/`;
 
 const getColor = row => {
     const actualCommitTime = moment(row.date);
-    const planningCommitTime = moment(row.round.start_time, 'hh:mm:ss');
+    const planningCommitTime = moment(`${actualCommitTime.format('yyyy-MM-DDT')}${row.round.start_time}`);
     const allowanceTime = Number(row.round.time_allowance);
     const lateTime = Number(row.round.late_time);
 
@@ -48,14 +48,16 @@ export default function Statistics() {
             <h1>Статистика обходов: </h1>
             <Table
                 header={(<>
-                    <TableCell>Дата и время обхода факт.</TableCell>
-                    <TableCell>Заданные дата и время обхода</TableCell>
+                    <TableCell>Дата обхода</TableCell>
+                    <TableCell>Время обхода факт.</TableCell>
+                    <TableCell>Заданное время обхода</TableCell>
                     <TableCell>Номер метки</TableCell>
                     <TableCell>Имя устройства</TableCell></>
                 )}
                 rows={rows.map((row) => (
                     <TableRow key={row.name} style={{ backgroundColor: getColor(row) }}>
-                        <TableCell>{moment(row.date).format("hh:mm:ss DD-MM-yy")}</TableCell>
+                        <TableCell>{moment(row.date).format("DD-MM-yy")}</TableCell>
+                        <TableCell>{moment(row.date).format("hh:mm:ss")}</TableCell>
                         <TableCell>{row.round.start_time}</TableCell>
                         <TableCell>{row.marker.name}</TableCell>
                         <TableCell>{row.device.name}</TableCell>
