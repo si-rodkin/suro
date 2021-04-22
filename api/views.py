@@ -4,13 +4,13 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.renderers import JSONRenderer
 
-from data_access.models import Device, Marker, GuardedObject, GuardRoute, Round, Commit, User
+from data_access.models import Device, Marker, GuardedObject, GuardRoute, Round, Commit, User, DeviceState
 
 from . import services
 # FIXME
 from . import _services
 
-from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, GuardRouteSerializer, RoundSerializer, CommitSerializer, UserSerializer, CsrfExemptSessionAuthentication
+from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, GuardRouteSerializer, RoundSerializer, CommitSerializer, UserSerializer, DeviceStateSerializer, CsrfExemptSessionAuthentication
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.authtoken.models import Token
@@ -21,6 +21,7 @@ def switch_create_marker_mode(request):
     global create_marker_mode
     create_marker_mode = True if create_marker_mode is False else False
     return HttpResponse(str(create_marker_mode))
+
 
 def get_current_route(request, imei) -> HttpResponse:
     return HttpResponse(services.get_current_route(imei))
@@ -36,7 +37,7 @@ def read_commit(requst, imei: str, rfid: str, roundId: str) -> HttpResponse:
         marker = Marker.objects.create(name="", rfid=rfid, route=None)
         serializer = MarkerSerializer(marker)
         return HttpResponse(JSONRenderer().render(serializer.data))
-    return HttpResponse(_services.read_commit(imei, rfid, roundId, requst.body[0], requst.body))
+    return HttpResponse(_services.read_commit(imei, rfid, roundId, requst.body))
 
 
 def read_object_routes(request, objectId):

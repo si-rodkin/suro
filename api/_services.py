@@ -32,7 +32,7 @@ def read_commit(imei: str, rfid: str, roundId: str, body) -> []:
     commit = Commit()
     commit.marker = Marker.objects.get(rfid=rfid)
     commit.device = Device.objects.get(imei=imei)
-    commit.date = datetime(year=from_byte(body[4]), month=from_byte(body[3]), day=from_byte(body[2]), hour=from_byte(body[1]), minute=from_byte(body[0]))
+    commit.date = datetime(year=(2000+body[4)), month=body[3], day=body[2], hour=body[0], minute=body[1])
     commit.round = Round.objects.get(pk=roundId)
     commit.save()
     return [to_byte(API_COMMANDS['ReadCommit'])]
