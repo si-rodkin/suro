@@ -57,11 +57,20 @@ def _get_device_nearest_rounds(imei: str):
     now = datetime.now()
     limit = now + timedelta(hours=1)
 
+    """Ограничение на время по умолчанию: если выборка в пределах дня"""
+    timeBound = Q(days=now.isoweekday() - 1) & Q(start_time__gte=now) & Q(start_time__lte=limit)
+
+    """Если выборка затрагивает два дня, то
+        1. выбираем обходы, которые остались в этом дне
+        2. выбираем обходы, которые будут в следующем дне с временем начала не позднее верхней границы выборки
+    """
+    if now.isoweekday() != limit.isoweekday():
+        timeBound = Q(days=now.isoweekday() - 1) | (Q(days=now.isoweekday()) & Q(start_time__lte=limit))
+
     device = Device.objects.get(imei=imei)
     rounds = Round.objects\
         .filter(device=device.id)\
-        .filter(Q(days=(limit.isoweekday() - 1)) | Q(days=limit.isoweekday()))\
-        .filter(Q(start_time__gte=now) & Q(start_time__lte=limit))\
+        .filter(timeBound)\
         .exclude(marker=None)
 
     return list(rounds)
