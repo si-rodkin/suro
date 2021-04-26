@@ -1,16 +1,16 @@
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.renderers import JSONRenderer
 
-from data_access.models import Device, Marker, GuardedObject, GuardRoute, Round, Commit, User, DeviceState
+from data_access.models import Device, Marker, GuardedObject, GuardRoute, Round, Commit, User
 
 from . import services
 # FIXME
 from . import _services
 
-from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, GuardRouteSerializer, RoundSerializer, CommitSerializer, UserSerializer, DeviceStateSerializer, CsrfExemptSessionAuthentication
+from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, GuardRouteSerializer, RoundSerializer, CommitSerializer, UserSerializer, CsrfExemptSessionAuthentication
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.authtoken.models import Token
@@ -19,12 +19,12 @@ create_marker_mode = False
 
 def switch_create_marker_mode(request):
     global create_marker_mode
-    create_marker_mode = True if create_marker_mode is False else False
+    create_marker_mode = create_marker_mode is False
     return HttpResponse(str(create_marker_mode))
 
 
-def get_current_route(request, imei) -> HttpResponse:
-    return HttpResponse(services.get_current_route(imei))
+def get_current_route(request: HttpRequest, imei) -> HttpResponse:
+    return HttpResponse(services.get_current_route(imei, request.GET.get('limit')))
 
 
 def get_current_datetime(request) -> HttpResponse:

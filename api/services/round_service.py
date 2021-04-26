@@ -6,7 +6,7 @@ from data_access.models import Device, Round
 from django.db.models import Q
 
 
-def get_current_route(device_imei: str) -> str:
+def get_current_route(device_imei: str, limit=None) -> str:
     """Вернуть маркеры, которые должны быть пройдены данным устройством
     в течении следующих 30ти минут
 
@@ -31,7 +31,7 @@ def get_current_route(device_imei: str) -> str:
         }
     """
 
-    nearest_rounds = _get_device_nearest_rounds(device_imei)
+    nearest_rounds = _get_device_nearest_rounds(device_imei, limit)
     round_begins = _get_device_rounds_begins(device_imei)
 
     response = {}
@@ -53,19 +53,20 @@ def get_current_route(device_imei: str) -> str:
     return json.dumps(response)
 
 
-def _get_device_nearest_rounds(imei: str):
+def _get_device_nearest_rounds(imei: str, limit):
     now = datetime.now()
-    limit = now + timedelta(hours=1)
+    timeBound = Q(days=now.isoweekday() - 1)
 
-    """Ограничение на время по умолчанию: если выборка в пределах дня"""
-    timeBound = Q(days=now.isoweekday() - 1) & Q(start_time__gte=now) & Q(start_time__lte=limit)
-
-    """Если выборка затрагивает два дня, то
-        1. выбираем обходы, которые остались в этом дне
-        2. выбираем обходы, которые будут в следующем дне с временем начала не позднее верхней границы выборки
-    """
-    if now.isoweekday() != limit.isoweekday():
-        timeBound = Q(days=now.isoweekday() - 1) | (Q(days=now.isoweekday()) & Q(start_time__lte=limit))
+    if limit != None and limit != '':
+        limit = now + timedelta(hours=int(limit))
+        """Ограничение на время по умолчанию: если выборка в пределах дня"""
+        timeBound = Q(days=now.isoweekday() - 1) & Q(start_time__gte=now) & Q(start_time__lte=limit)
+        """Если выборка затрагивает два дня, то
+            1. выбираем обходы, которые остались в этом дне
+            2. выбираем обходы, которые будут в следующем дне с временем начала не позднее верхней границы выборки
+        """
+        if now.isoweekday() != limit.isoweekday():
+            timeBound = Q(days=now.isoweekday() - 1) | (Q(days=now.isoweekday()) & Q(start_time__lte=limit))
 
     device = Device.objects.get(imei=imei)
     rounds = Round.objects\
