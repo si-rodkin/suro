@@ -1,7 +1,7 @@
 from rest_framework.authentication import SessionAuthentication
 
 from .commit import CommitSerializer
-from .device import DeviceSerializer, StateSerializer as DeviceStateSerializer
+from .device import DeviceSerializer #, StateSerializer as DeviceStateSerializer
 # from .guard_route import GuardRouteSerializer
 from .guarded_object import TheRingSerializer
 from .marker import MarkerSerializer, GuardRouteSerializer

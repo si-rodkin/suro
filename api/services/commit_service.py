@@ -25,12 +25,12 @@ def get_all_commits() -> []:
 
 
 def get_planned_commits() -> []:
-    return Commit.objects.raw('SELECT * FROM data_access_commit c WHERE (SELECT marker_id FROM data_access_round WHERE c.round_id = id) = c.marker_id')
+    return Commit.objects.raw('SELECT * FROM Commits c WHERE (SELECT marker_id FROM Rounds WHERE c.round_id = id) = c.marker_id')
 
 
 def get_unplanned_commits() -> []:
-    return Commit.objects.raw('SELECT * FROM data_access_commit c WHERE (SELECT marker_id FROM data_access_round WHERE c.round_id = id) <> c.marker_id')
+    return Commit.objects.raw('SELECT * FROM Commits c WHERE (SELECT marker_id FROM Rounds WHERE c.round_id = id) <> c.marker_id')
 
 
 def get_missed_commits() -> []:
-    return Commit.objects.raw('SELECT * FROM data_access_commit c WHERE c.marker_id is null')
+    return Commit.objects.raw('SELECT * FROM Commits c WHERE c.marker_id is null')

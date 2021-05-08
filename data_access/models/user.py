@@ -13,8 +13,10 @@ class User(DjangoUserModel):
     phone = PhoneNumberField(verbose_name="Телефонный номер", null=False, blank=False, unique=True, db_index=True)
     timezone = models.CharField(verbose_name="Часовой пояс", null=False, blank=False, max_length=32, default="Europe/Moscow")
     avatar = models.ImageField(verbose_name="Аватар пользователя", null=True, blank=True)
-    role = models.CharField(verbose_name="Роль", max_length=32, blank=True, null=True)
-
+    is_leading = models.BooleanField(verbose_name="Является ли управленцем", default=False)
+    lead = models.ForeignKey("self", verbose_name="Руководитель", null=True, on_delete=models.CASCADE)
+    
     class Meta:
+        db_table = "Users"
         verbose_name = "Пользователь системы"
         verbose_name_plural = "Пользователи системы"

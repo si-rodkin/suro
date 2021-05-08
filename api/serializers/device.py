@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from data_access.models.device import Device, State
+from data_access.models.device import Device #, State
 
 
 class DeviceSerializer(ModelSerializer):
@@ -11,9 +11,9 @@ class DeviceSerializer(ModelSerializer):
         fields = ['id', 'imei', 'name', 'phone', 'guard_routes']
 
 
-class StateSerializer(ModelSerializer):
-    """Сериализатор модели состояния устройства"""
+# class StateSerializer(ModelSerializer):
+#     """Сериализатор модели состояния устройства"""
 
-    class Meta:
-        model = State
-        fields = '__all__'
+#     class Meta:
+#         model = State
+#         fields = '__all__'

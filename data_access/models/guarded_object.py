@@ -8,5 +8,6 @@ class GuardedObject(models.Model):
                            max_length=12)
 
     class Meta:
+        db_table = "Objects"
         verbose_name = "Охраняемый объект"
         verbose_name_plural = "Охраняемые объекты"

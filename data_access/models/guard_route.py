@@ -12,6 +12,7 @@ class GuardRoute(models.Model):
     devices = models.ManyToManyField(Device, verbose_name="Устройство обхода", related_name="guard_routes", blank=True)
 
     class Meta:
+        db_table = "GuardRoutes"
         verbose_name = "Маршрут охраны"
         verbose_name_plural = "Маршруты охраны"
 

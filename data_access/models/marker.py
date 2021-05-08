@@ -11,6 +11,7 @@ class Marker(models.Model):
     route = models.ForeignKey(GuardRoute, verbose_name="Маршрут", on_delete=models.SET_NULL, related_name="markers", blank=True, null=True)
 
     class Meta:
+        db_table = "Markers"
         verbose_name = "Маркер"
         verbose_name_plural = "Маркеры"
 

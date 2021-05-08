@@ -9,18 +9,20 @@ class Device(models.Model):
     phone = PhoneNumberField(verbose_name="Номер GSM-модуля", null=False, blank=False, unique=True, db_index=True)
 
     class Meta:
+        db_table = "Devices"
         verbose_name = "Устройство"
         verbose_name_plural = "Устройства"
 
 
-class State(models.Model):
-    """Модель статистики состояния устройства"""
+# class State(models.Model):
+#     """Модель статистики состояния устройства"""
 
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+#     device = models.ForeignKey(Device, on_delete=models.CASCADE)
 
-    isOpened = models.BooleanField(verbose_name="Было ли вскрытие")
-    batteryLevel = models.IntegerField(verbose_name="Уровень заряда батареи")
+#     isOpened = models.BooleanField(verbose_name="Было ли вскрытие")
+#     batteryLevel = models.IntegerField(verbose_name="Уровень заряда батареи")
 
-    class Meta:
-        verbose_name = "Состояние устройство"
-        verbose_name_plural = "Состояния устройств"
+#     class Meta:
+#         db_table = "DeviceStates"
+#         verbose_name = "Состояние устройство"
+#         verbose_name_plural = "Состояния устройств"

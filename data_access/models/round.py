@@ -17,6 +17,7 @@ class Round(models.Model):
     device = models.ForeignKey(Device, verbose_name="Устройство", on_delete=models.CASCADE, related_name="rounds")
 
     class Meta:
+        db_table = "Rounds"
         verbose_name = "Обход"
         verbose_name_plural = "Обходы"
 

@@ -13,4 +13,5 @@ class Commit(models.Model):
     date = models.DateTimeField(verbose_name="Дата обмена информацией")
 
     class Meta:
+        db_table = "Commits"
         verbose_name = "Синхронизация с устройством"
