@@ -18,7 +18,7 @@ const getColor = row => {
     const allowanceTime = Number(row.round.time_allowance);
     const lateTime = Number(row.round.late_time);
 
-    const diff = actualCommitTime.diff(planningCommitTime, 'minutes');
+    const diff = Math.abs(actualCommitTime.diff(planningCommitTime, 'minutes'));
 
     if (diff <= allowanceTime) {
         return 'lightgreen';
@@ -32,20 +32,29 @@ const getColor = row => {
 }
 
 export default function Statistics() {
-    const [rows, setRows] = useState([]);
+    const [plannedCommits, setPlannedCommits] = useState([]);
+    const [unPlannedCommits, setUnPlannedCommits] = useState([]);
 
     useEffect(() => {
         axios({
             method: 'GET',
-            url: serviceUrl
+            url: `${serviceUrl}planned/`
         })
-            .then(({ data }) => setRows(data))
-            .catch(error => console.log(error));
+        .then(({ data }) => setPlannedCommits(data))
+        .catch(error => console.log(error));
+
+        axios({
+            method: 'GET',
+            url: `${serviceUrl}unplanned/`
+        })
+        .then(({ data }) => setUnPlannedCommits(data))
+        .catch(error => console.log(error));
     }, []);
 
     return (
         <Container>
-            <h1>Статистика обходов: </h1>
+            <h1>Статистика обходов</h1>
+            <h3 style={{marginTop: '2.5%'}}>Запланированные</h3>
             <Table
                 header={(<>
                     <TableCell>Дата обхода</TableCell>
@@ -54,10 +63,28 @@ export default function Statistics() {
                     <TableCell>Номер метки</TableCell>
                     <TableCell>Имя устройства</TableCell></>
                 )}
-                rows={rows.map((row) => (
+                rows={plannedCommits?.map((row) => (
                     <TableRow key={row.name} style={{ backgroundColor: getColor(row) }}>
                         <TableCell>{moment(row.date).format("DD-MM-yy")}</TableCell>
-                        <TableCell>{moment(row.date).format("hh:mm:ss")}</TableCell>
+                        <TableCell>{moment(row.date).format("HH:mm:ss")}</TableCell>
+                        <TableCell>{row.round.start_time}</TableCell>
+                        <TableCell>{row.marker.name}</TableCell>
+                        <TableCell>{row.device.name}</TableCell>
+                    </TableRow>
+                ))} />
+            <h3 style={{marginTop: '2.5%'}}>Случайные</h3>
+            <Table
+                header={(<>
+                    <TableCell>Дата обхода</TableCell>
+                    <TableCell>Время обхода факт.</TableCell>
+                    <TableCell>Заданное время обхода</TableCell>
+                    <TableCell>Номер метки</TableCell>
+                    <TableCell>Имя устройства</TableCell></>
+                )}
+                rows={unPlannedCommits?.map((row) => (
+                    <TableRow key={row.name} style={{ backgroundColor: getColor(row) }}>
+                        <TableCell>{moment(row.date).format("DD-MM-yy")}</TableCell>
+                        <TableCell>{moment(row.date).format("HH:mm:ss")}</TableCell>
                         <TableCell>{row.round.start_time}</TableCell>
                         <TableCell>{row.marker.name}</TableCell>
                         <TableCell>{row.device.name}</TableCell>

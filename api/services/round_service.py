@@ -1,9 +1,9 @@
 import json
 from datetime import datetime, timedelta
 
-from data_access.models import Device, Round
-
 from django.db.models import Q
+
+from data_access.models import Device, Round
 
 
 def get_current_route(device_imei: str, limit=None) -> str:
@@ -46,7 +46,6 @@ def get_current_route(device_imei: str, limit=None) -> str:
             'name': marker.marker.name
         })
 
-
     for round_begin in round_begins:
         response['round_begins'].append({'start_time': str(round_begin.start_time)})
 
@@ -59,19 +58,26 @@ def _get_device_nearest_rounds(imei: str, limit):
 
     if limit != None and limit != '':
         limit = now + timedelta(hours=int(limit))
-        """Ограничение на время по умолчанию: если выборка в пределах дня"""
-        timeBound = Q(days=now.isoweekday() - 1) & Q(start_time__gte=now) & Q(start_time__lte=limit)
-        """Если выборка затрагивает два дня, то
-            1. выбираем обходы, которые остались в этом дне
-            2. выбираем обходы, которые будут в следующем дне с временем начала не позднее верхней границы выборки
-        """
+
+        """Если выборка затрагивает несколько дней, то"""
         if now.isoweekday() != limit.isoweekday():
-            timeBound = Q(days=now.isoweekday() - 1) | (Q(days=now.isoweekday()) & Q(start_time__lte=limit))
+            """ 1. выбираем обходы, которые остались в этом дне"""
+            timeBound = Q(days=now.isoweekday() - 1) & Q(start_time__gte=now)
+
+            """ 2. выбираем обходы которые должны быть между днем запроса и днем лимита"""
+            for day in range(now.isoweekday(), limit.isoweekday() - 1):
+                timeBound |= Q(days=day)
+
+            """ 3. выбираем обходы, которые будут в последнем дне с временем начала не позднее верхней границы выборки"""
+            timeBound |= Q(days=limit.isoweekday() - 1) & Q(start_time__lte=limit)
+        else:
+            """Ограничение на время по умолчанию: если выборка в пределах дня"""
+            timeBound = Q(days=now.isoweekday() - 1) & Q(start_time__gte=now) & Q(start_time__lte=limit)
 
     device = Device.objects.get(imei=imei)
-    rounds = Round.objects\
-        .filter(device=device.id)\
-        .filter(timeBound)\
+    rounds = Round.objects \
+        .filter(device=device.id) \
+        .filter(timeBound) \
         .exclude(marker=None)
 
     return list(rounds)

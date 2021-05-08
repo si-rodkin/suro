@@ -1,12 +1,12 @@
-from .user import UserSerializer
-from .round import RoundSerializer
-from .marker import MarkerSerializer, GuardRouteSerializer
-from .device import DeviceSerializer
+from rest_framework.authentication import SessionAuthentication
+
+from .commit import CommitSerializer
+from .device import DeviceSerializer, StateSerializer as DeviceStateSerializer
 # from .guard_route import GuardRouteSerializer
 from .guarded_object import TheRingSerializer
-from .commit import CommitSerializer
-
-from rest_framework.authentication import SessionAuthentication
+from .marker import MarkerSerializer, GuardRouteSerializer
+from .round import RoundSerializer
+from .user import UserSerializer
 
 
 # Костылим проверку CSRF-токена

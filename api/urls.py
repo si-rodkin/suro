@@ -1,11 +1,11 @@
 from django.urls import path, include
 
 from api.views import DeviceView, MarkerView, TheRingView, \
-    GuardRouteView, DeviceDetailView, MarkerDetailView, TheRingDetailView, GuardRouteDetailView, RoundView, RoundDetail, CommitView, \
-        UserView, UserDetailView
-
+    GuardRouteView, DeviceDetailView, MarkerDetailView, TheRingDetailView, GuardRouteDetailView, RoundView, RoundDetail, \
+    UserView, UserDetailView
 from api.views import get_current_route, get_current_datetime, read_commit, \
-    read_object_routes, read_marker_rounds, read_free_markers, user_data, switch_create_marker_mode
+    read_object_routes, read_marker_rounds, read_free_markers, user_data, switch_create_marker_mode, \
+    get_all_commits, get_planned_commits, get_unplanned_commits, get_missed_commits
 
 app_name = 'api'
 
@@ -17,13 +17,17 @@ urlpatterns = [
     path('sync/date/', get_current_datetime),
     path('sync/route/<str:imei>/', get_current_route),
 
-    path('commits/', CommitView.as_view()),
+    path('commits/', get_all_commits),
+    path('commits/planned/', get_planned_commits),
+    path('commits/unplanned/', get_unplanned_commits),
+    path('commits/missed/', get_missed_commits),
     path('commit/<str:imei>/<str:rfid>/<str:roundId>/', read_commit),
 
     path('user/', user_data),
 
     path('devices/', DeviceView.as_view(), name='devices'),
     path('devices/<int:pk>/', DeviceDetailView.as_view(), name='device'),
+    # path('device/state/', DeviceStateView.as_view()),
 
     path('markers/', MarkerView.as_view(), name='markers'),
     path('markers/<int:pk>/', MarkerDetailView.as_view(), name='marker'),

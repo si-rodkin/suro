@@ -1,10 +1,9 @@
+from datetime import datetime
+
 from django.test import TestCase
 
-from ..services.round_service import _get_device_nearest_rounds
 from data_access.models import Round, Device, Marker
-
-import json
-from datetime import datetime
+from ..services.round_service import _get_device_nearest_rounds
 
 
 class DeviceRoundSelectionTest(TestCase):
@@ -14,7 +13,9 @@ class DeviceRoundSelectionTest(TestCase):
         self.device = Device.objects.create(
             imei="111122223333444", name="Test device")
         self.round = Round.objects.create(marker=marker, device=self.device, name="Test round",
-                                          days=datetime.now().isoweekday(), start_time=f'{datetime.now().time().hour}:{datetime.now().time().minute+5}', end_time=None, time_allowance=5, late_time=10)
+                                          days=datetime.now().isoweekday(),
+                                          start_time=f'{datetime.now().time().hour}:{datetime.now().time().minute + 5}',
+                                          end_time=None, time_allowance=5, late_time=10)
 
     def test_that_selection_result_is_a_list(self):
         device_rounds = _get_device_nearest_rounds(self.device.imei)
@@ -30,8 +31,10 @@ class DeviceRoundSelectionTest(TestCase):
 
     # TODO: проверка временнЫх
     def test_that_selected_round(self):
-        Round.objects.create(marker=Marker.objects.create(name="_", rfid="_", route=None), device=self.device, name="Test round",
-                             days=(datetime.now().isoweekday()+1) % 7, start_time=datetime.now().time(), end_time=None, time_allowance=5, late_time=10)
+        Round.objects.create(marker=Marker.objects.create(name="_", rfid="_", route=None), device=self.device,
+                             name="Test round",
+                             days=(datetime.now().isoweekday() + 1) % 7, start_time=datetime.now().time(),
+                             end_time=None, time_allowance=5, late_time=10)
         device_rounds = _get_device_nearest_rounds(self.device.imei)
 
         self.assertIs(len(device_rounds), 1)

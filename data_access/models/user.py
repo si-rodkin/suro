@@ -13,6 +13,7 @@ class User(DjangoUserModel):
     phone = PhoneNumberField(verbose_name="Телефонный номер", null=False, blank=False, unique=True, db_index=True)
     timezone = models.CharField(verbose_name="Часовой пояс", null=False, blank=False, max_length=32, default="Europe/Moscow")
     avatar = models.ImageField(verbose_name="Аватар пользователя", null=True, blank=True)
+    role = models.CharField(verbose_name="Роль", max_length=32, blank=True, null=True)
 
     class Meta:
         verbose_name = "Пользователь системы"

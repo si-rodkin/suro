@@ -1,21 +1,17 @@
 from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.renderers import JSONRenderer
 
 from data_access.models import Device, Marker, GuardedObject, GuardRoute, Round, Commit, User
-
 from . import services
-# FIXME
-from . import _services
-
-from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, GuardRouteSerializer, RoundSerializer, CommitSerializer, UserSerializer, CsrfExemptSessionAuthentication
-
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.authtoken.models import Token
+from .serializers import DeviceSerializer, MarkerSerializer, TheRingSerializer, GuardRouteSerializer, RoundSerializer, \
+    CommitSerializer, UserSerializer
 
 create_marker_mode = False
+
 
 def switch_create_marker_mode(request):
     global create_marker_mode
@@ -28,7 +24,7 @@ def get_current_route(request: HttpRequest, imei) -> HttpResponse:
 
 
 def get_current_datetime(request) -> HttpResponse:
-    return HttpResponse(_services.get_current_datetime())
+    return HttpResponse(services.get_current_datetime())
 
 
 def read_commit(requst, imei: str, rfid: str, roundId: str) -> HttpResponse:
@@ -37,7 +33,7 @@ def read_commit(requst, imei: str, rfid: str, roundId: str) -> HttpResponse:
         marker = Marker.objects.create(name="", rfid=rfid, route=None)
         serializer = MarkerSerializer(marker)
         return HttpResponse(JSONRenderer().render(serializer.data))
-    return HttpResponse(_services.read_commit(imei, rfid, roundId, requst.body))
+    return HttpResponse(services.read_commit(imei, rfid, roundId, requst.body))
 
 
 def read_object_routes(request, objectId):
@@ -51,6 +47,34 @@ def read_marker_rounds(request, markerId):
     markerId = markerId if markerId != 0 else None
     rounds = Round.objects.filter(marker__id=markerId)
     serializer = RoundSerializer(data=rounds, many=True)
+    serializer.is_valid()
+    return HttpResponse(JSONRenderer().render(serializer.data))
+
+# FIXME: отрефакторить вьюхи получения коммитов
+def get_all_commits(request):
+    commits = services.get_all_commits()
+    serializer = CommitSerializer(data=commits, many=True)
+    serializer.is_valid()
+    return HttpResponse(JSONRenderer().render(serializer.data))
+
+
+def get_planned_commits(request):
+    commits = services.get_planned_commits()
+    serializer = CommitSerializer(data=commits, many=True)
+    serializer.is_valid()
+    return HttpResponse(JSONRenderer().render(serializer.data))
+
+
+def get_unplanned_commits(request):
+    commits = services.get_unplanned_commits()
+    serializer = CommitSerializer(data=commits, many=True)
+    serializer.is_valid()
+    return HttpResponse(JSONRenderer().render(serializer.data))
+
+
+def get_missed_commits(request):
+    commits = services.get_missed_commits()
+    serializer = CommitSerializer(data=commits, many=True)
     serializer.is_valid()
     return HttpResponse(JSONRenderer().render(serializer.data))
 
@@ -121,11 +145,6 @@ class RoundView(ListCreateAPIView):
 class RoundDetail(RetrieveUpdateDestroyAPIView):
     queryset = Round.objects.all()
     serializer_class = RoundSerializer
-
-
-class CommitView(ListAPIView):
-    queryset = Commit.objects.all()
-    serializer_class = CommitSerializer
 
 
 class UserView(ListCreateAPIView):

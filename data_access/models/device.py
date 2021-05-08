@@ -11,3 +11,16 @@ class Device(models.Model):
     class Meta:
         verbose_name = "Устройство"
         verbose_name_plural = "Устройства"
+
+
+class State(models.Model):
+    """Модель статистики состояния устройства"""
+
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+
+    isOpened = models.BooleanField(verbose_name="Было ли вскрытие")
+    batteryLevel = models.IntegerField(verbose_name="Уровень заряда батареи")
+
+    class Meta:
+        verbose_name = "Состояние устройство"
+        verbose_name_plural = "Состояния устройств"

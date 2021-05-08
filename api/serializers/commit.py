@@ -1,8 +1,9 @@
 from rest_framework.serializers import ModelSerializer
 
 from data_access.models import Commit
-
-from ..serializers import DeviceSerializer, RoundSerializer, MarkerSerializer
+from .round import RoundSerializer
+from .marker import MarkerSerializer
+from .device import DeviceSerializer
 
 
 class CommitSerializer(ModelSerializer):
