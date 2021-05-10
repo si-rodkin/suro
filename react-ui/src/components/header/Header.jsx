@@ -75,11 +75,13 @@ function Header(props) {
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
                         >
-                            <MenuItem><Link className='App-link' to='/objects' onClick={handleClose}>Объекты</Link></MenuItem>
-                            <MenuItem><Link className='App-link' to='/devices' onClick={handleClose}>Устройства</Link></MenuItem>
-                            <MenuItem><Link className='App-link' to='/markers' onClick={handleClose}>Маркеры</Link></MenuItem>
-                            {/* <MenuItem><Link className="App-link" to="/users" onClick={handleClose}>Пользователи</Link></MenuItem> */}
-                            <MenuItem><Link className='App-link' to='/statistics' onClick={handleClose}>Статистика</Link></MenuItem>
+                            <Link className='App-link' to='/objects' onClick={handleClose}><MenuItem>Объекты</MenuItem></Link>
+                            <Link className='App-link' to='/devices' onClick={handleClose}><MenuItem>Устройства</MenuItem></Link>
+                            <Link className='App-link' to='/markers' onClick={handleClose}><MenuItem>Маркеры</MenuItem></Link>
+                            <Link className='App-link' to='/statistics' onClick={handleClose}><MenuItem>Статистика</MenuItem></Link>
+                            {props.isLeading &&
+                                <Link className="App-link" to="/employees" onClick={handleClose}><MenuItem>Сотрудники</MenuItem></Link>
+                            }
                         </Menu>
                     </>)}
                     <Typography variant='h6' className={classes.title}>
@@ -152,10 +154,10 @@ Header.defaultProps = {
 
 
 const mapStateToProps = (state) => {
-    window.state = state;
     return {
         isAuthenticated: state.token !== null,
-        authError: state.error
+        authError: state.error,
+        isLeading: state.user?.is_leading
     }
 }
 

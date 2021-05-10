@@ -22,6 +22,13 @@ export const authSuccess = (token) => {
     }
 }
 
+export const setUser = (user) => {
+    return {
+        type: actionTypes.SET_USER,
+        user
+    }
+}
+
 export const logout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('expirationDate');
@@ -52,6 +59,17 @@ export const authLogin = (login, password) => {
                 localStorage.setItem('expirationDate', expirationDate);
                 dispatch(authSuccess(token));
                 checkAuthTimeOut(EXPIRATION_TIME);
+
+                axios.get(`${enviroment.apiHost}/api/user/`, {
+                    headers: {
+                        authorization: token
+                    }
+                })
+                .then(response => {
+                    localStorage.setItem('user', JSON.stringify(response.data))
+                    dispatch(setUser(response.data));
+                })
+                .catch(error => console.log(error));        
             })
             .catch(err => {
                 dispatch(authFail(err));
@@ -67,10 +85,11 @@ export const authCheckState = () => {
             dispatch(logout());
         } else {
             const expirationDate = new Date(localStorage.getItem('expirationDate'));
-            if (expirationDate <= new Date) {
+            if (expirationDate <= new Date()) {
                 dispatch(logout());
             } else {
                 dispatch(authSuccess(token));
+                dispatch(setUser(JSON.parse(localStorage.getItem('user'))))
                 dispatch(checkAuthTimeOut((expirationDate.getTime() - new Date().getTime()) / 1000));
             }
         }

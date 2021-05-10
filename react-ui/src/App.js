@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom';
 
 import { Header } from './components';
 import * as actions from './store/actions/auth';
-import { RouteList } from './RouteList';
+import { default as RouteList } from './RouteList';
 
 // TODO: создать список разделов, на бэке список разделов разрешенных для конкретного пользователя
 

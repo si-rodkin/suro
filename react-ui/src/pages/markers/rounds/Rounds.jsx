@@ -64,7 +64,7 @@ export default function Rounds(props) {
 
     return (
         <Container>
-            <h1>Обходы: </h1>
+            <h1>Обходы</h1>
             <Container style={{ display: 'flex', paddingRight: 0, justifyContent: 'flex-end' }}>
                 <Button variant='contained' color='primary' onClick={() => onEditClick({ id: null, marker: markerId })}>Добавить</Button>
             </Container>

@@ -6,3 +6,4 @@ export { default as Rounds } from './markers/rounds/Rounds'
 export { default as Routes } from './objects/routes/Routes'
 export { default as Statistics } from './statistics/Statistics'
 export { default as UserProfile } from './users/profile/UserProfile';
+export { default as Employees } from './employees/Employees';

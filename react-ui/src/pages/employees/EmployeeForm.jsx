@@ -1,14 +1,13 @@
-import React from 'react'
-
-import Dialog from '../../../components/dialog/Dialog';
-import Input from '../../../components/dialog/controls/Input';
-import PasswordInput from '../../../components/dialog/controls/PasswordInput';
-import PhoneInput from '../../../components/dialog/controls/PhoneInput';
-
-import * as genValidators from '../../../components/dialog/validators';
-import * as enviroment from '../../../enviroment';
-
-import axios from 'axios';
+import React from "react";
+import axios from "axios";
+import { connect } from 'react-redux';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Dialog from "../../components/dialog/Dialog";
+import Input from "../../components/dialog/controls/Input";
+import PhoneInput from "../../components/dialog/controls/PhoneInput";
+import * as genValidators from "../../components/dialog/validators";
+import * as enviroment from '../../enviroment';
 
 const validators = {
     pNumber: entity => !genValidators.isEmpty(entity.personnel_number),
@@ -18,29 +17,26 @@ const validators = {
     username: entity => !genValidators.isEmpty(entity.username),
     email: entity => !genValidators.isEmail(entity.email),
     position: entity => !genValidators.isEmpty(entity.position),
-    // password: entity => genValidators.isEmpty(entity.password) || entity.password.length > 5,
-    // passwordRepeat: entity => (genValidators.isEmpty(entity.password) && genValidators.isEmpty(entity.passwordRepeat)) || entity.password === entity.passwordRepeat
 }
 
-export default function UserProfile({ open, close }) {
-    const [user, setUser] = React.useState({});
+const serviceUrl = `${enviroment.apiHost}/api/users/`;
 
-    const onChange = (name, value) => setUser({ ...user, [name]: value });
+function EmployeeForm({ value, close, open, saveHandler, lead }) {
+    const [entity, changeEntity] = React.useState({});
+    React.useEffect(() => changeEntity(value), [value]);
+    const onChange = (name, value) => changeEntity({ ...entity, [name]: value })
+
     const handleAccept = () => {
-        axios.put(`${enviroment.apiHost}/api/users/${user.id}/`, {...user, timezone: 'Europe/Moscow'})
-            .then(({ data }) => setUser(data))
-            .catch(error => alert(error));
+        entity.lead = lead;
+        axios({
+            method: entity.id !== null ? 'PUT' : 'POST',
+            url: entity.id !== null ? `${serviceUrl}${entity.id}/` : serviceUrl,
+            data: entity
+        }).then(({ data }) => {
+            saveHandler(data);
+            close();
+        }).catch((error) => alert('Ошибка при выполнении операции: ' + error));
     }
-
-    React.useEffect(() => {
-        axios.get(`${enviroment.apiHost}/api/user/`, {
-            headers: {
-                authorization: localStorage.getItem('token')
-            }
-        })
-            .then(response => setUser(response.data))
-            .catch(error => console.log(error))
-    }, [open])
 
     return (
         <Dialog
@@ -55,17 +51,17 @@ export default function UserProfile({ open, close }) {
                     label: 'Сохранить',
                     action: handleAccept,
                     color: 'primary',
-                    disabled: () => Object.values(validators).filter(valid => !valid(user)).length > 0
+                    disabled: () => Object.values(validators).filter(valid => !valid(entity)).length > 0
                 }
             ]}
         >
             <Input label='Табельный номер'
                 name='personnel_number'
-                value={user.personnel_number}
+                value={entity.personnel_number}
                 onChange={onChange}
                 validators={[
                     {
-                        validate: () => validators.pNumber(user),
+                        validate: () => validators.pNumber(entity),
                         message: 'Укажите корректный персональный номер'
                     }
                 ]}
@@ -74,11 +70,11 @@ export default function UserProfile({ open, close }) {
 
             <Input label='Фамилия'
                 name='last_name'
-                value={user.last_name}
+                value={entity.last_name}
                 onChange={onChange}
                 validators={[
                     {
-                        validate: () => validators.lastName(user),
+                        validate: () => validators.lastName(entity),
                         message: 'Укажите фамилию'
                     }
                 ]}
@@ -86,11 +82,11 @@ export default function UserProfile({ open, close }) {
 
             <Input label='Имя'
                 name='first_name'
-                value={user.first_name}
+                value={entity.first_name}
                 onChange={onChange}
                 validators={[
                     {
-                        validate: () => validators.firstName(user),
+                        validate: () => validators.firstName(entity),
                         message: 'Укажите имя'
                     }
                 ]}
@@ -98,17 +94,17 @@ export default function UserProfile({ open, close }) {
 
             <Input label='Отчество'
                 name='patr_name'
-                value={user.patr_name}
+                value={entity.patr_name}
                 onChange={onChange}
             />
 
-            <Input label='Должность'
+            <Input label='Позиция'
                 name='position'
-                value={user.position}
+                value={entity.position}
                 onChange={onChange}
                 validators={[
                     {
-                        validate: () => validators.position(user),
+                        validate: () => validators.position(entity),
                         message: 'Укажите должность'
                     }
                 ]}
@@ -116,11 +112,11 @@ export default function UserProfile({ open, close }) {
 
             <PhoneInput label='Телефон'
                 name='phone'
-                value={user.phone}
+                value={entity.phone}
                 onChange={onChange}
                 validators={[
                     {
-                        validate: () => validators.phone(user),
+                        validate: () => validators.phone(entity),
                         message: 'Введите корректный номер телефона'
                     }
                 ]}
@@ -128,11 +124,11 @@ export default function UserProfile({ open, close }) {
 
             <Input label='E-mail'
                 name='email'
-                value={user.email}
+                value={entity.email}
                 onChange={onChange}
                 validators={[
                     {
-                        validate: () => validators.email(user),
+                        validate: () => validators.email(entity),
                         message: 'Введите корректный адрес электронной почты'
                     }
                 ]} />
@@ -141,39 +137,35 @@ export default function UserProfile({ open, close }) {
 
             <Input label='Имя пользователя'
                 name='username'
-                value={user.username}
+                value={entity.username}
                 onChange={onChange}
                 validators={[
                     {
-                        validate: () => validators.username(user),
+                        validate: () => validators.username(entity),
                         message: 'Укажите имя пользователя'
                     }
                 ]}
             />
 
-            {/* <PasswordInput
-                label='Пароль'
-                name='password'
-                onChange={onChange}
-                validators={[
-                    {
-                        validate: () => validators.password(user),
-                        message: 'Пароль должен сожержать не менее 6 символов!'
-                    }
-                ]}
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={entity.is_leading}
+                        onChange={e => {console.log(e.target); onChange('is_leading', e.target.checked)}}
+                    />
+                }
+                label="Имеет подчиненных"
             />
-            <PasswordInput
-                label='Повторите пароль'
-                name='passwordRepeat'
-                onChange={onChange}
-                validators={[
-                    {
-                        validate: () => validators.passwordRepeat(user),
-                        message: 'Пароли не совпадают'
-                    }
-                ]}
-            /> */}
 
         </Dialog>
     )
 }
+
+const mapStateToProps = (state) => {
+    return {
+        lead: state.user?.id
+    }
+}
+
+export default connect(mapStateToProps, null)(EmployeeForm)
+

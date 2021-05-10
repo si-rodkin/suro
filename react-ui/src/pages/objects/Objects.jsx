@@ -56,7 +56,7 @@ export default function Objects() {
 
     return (
         <Container>
-            <h1>Объекты: </h1>
+            <h1>Объекты</h1>
             <Container style={{ display: 'flex', paddingRight: 0, justifyContent: 'flex-end' }}>
                 <Button variant='contained'
                         color='primary'

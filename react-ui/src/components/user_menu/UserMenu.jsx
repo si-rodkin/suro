@@ -1,16 +1,14 @@
 import React from 'react'
 
-import axios from 'axios';
-
 import { connect } from 'react-redux';
 
 import * as actions from '../../store/actions/auth';
-import * as enviroment from '../../enviroment';
 
 import Avatar from '@material-ui/core/Avatar';
 import { Menu, MenuItem, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import UserProfile from '../../pages/users/profile/UserProfile';
+import ChangePassword from '../../pages/users/password/ChangePassword';
 
 const linkStyle = {
     color: 'black',
@@ -18,6 +16,7 @@ const linkStyle = {
 }
 
 function UserMenu(props) {
+    const [changePasswordOpen, setChangePasswordOpen] = React.useState(false);
     const [profileOpen, setProfileOpen] = React.useState(false);
     const [anchor, setAnchor] = React.useState(undefined);
 
@@ -30,16 +29,8 @@ function UserMenu(props) {
     }
 
     const handleProfileOpen = () => setProfileOpen(true);
+    const handleChangePassOpen = () => setChangePasswordOpen(true);
 
-    React.useEffect(() => {
-        axios.get(`${enviroment.apiHost}/api/user/`, {
-            headers: {
-                authorization: localStorage.getItem('token')
-            }
-        })
-            .then(response => console.log(response))
-            .catch(error => console.log(error))
-    }, [])
     return (
         <div style={{ marginRight: '15px' }}>
             <Avatar onClick={e => setAnchor(e.currentTarget)} src="..." />
@@ -49,6 +40,7 @@ function UserMenu(props) {
                 onClose={() => setAnchor(undefined)}
             >
                 <MenuItem onClick={handleProfileOpen}><Link style={linkStyle}>Профиль</Link></MenuItem>
+                <MenuItem onClick={handleChangePassOpen}><Link style={linkStyle}>Изменить пароль</Link></MenuItem>
                 {/* <MenuItem><Link style={linkStyle}>Параметры организации</Link></MenuItem>
                 <MenuItem><Link style={linkStyle}>Параметры безопасности</Link></MenuItem> */}
                 <MenuItem onClick={handleUnauthClick}><Link style={linkStyle}>Выход</Link></MenuItem>
@@ -58,8 +50,19 @@ function UserMenu(props) {
                 open={profileOpen}
                 close={() => setProfileOpen(false)}
             />
+            <ChangePassword
+                open={changePasswordOpen}
+                close={() => setChangePasswordOpen(false)}
+                userId={props.userId}
+            />
         </div >
     )
+}
+
+const mapStateToProps = state => {
+    return {
+        userId: state.user?.id
+    }
 }
 
 const mapDispatchToProps = dispatch => {
@@ -70,4 +73,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(undefined, mapDispatchToProps)(UserMenu)
+export default connect(mapStateToProps, mapDispatchToProps)(UserMenu)

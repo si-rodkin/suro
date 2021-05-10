@@ -21,9 +21,9 @@ def get_current_route(device_imei: str, limit=None) -> str:
             'marker_count': 3,
             'begins_count': 1,
             'markers': [
-                { 'start_time': '10:10', 'id': '1', 'name': 'Угол 1' },
-                { 'start_time': '12:10', 'id': '2', 'name': 'Угол 2' },
-                { 'start_time': '14:10', 'id': '3', 'name': 'Угол 3' }
+                { 'start_time': '10:10', 'id': '1', 'name': 'Угол 1', 'rfid': '9999DA91' },
+                { 'start_time': '12:10', 'id': '2', 'name': 'Угол 2', 'rfid': '9999DA92' },
+                { 'start_time': '14:10', 'id': '3', 'name': 'Угол 3', 'rfid': '9999DA93' }
             ],
             round_begins: [
                 {'start_time': '10:00'}
@@ -43,7 +43,8 @@ def get_current_route(device_imei: str, limit=None) -> str:
         response['markers'].append({
             'start_time': str(marker.start_time),
             'id': str(marker.id),
-            'name': marker.marker.name
+            'name': marker.marker.name,
+            'rfid': marker.marker.rfid,
         })
 
     for round_begin in round_begins:

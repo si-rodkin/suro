@@ -105,7 +105,7 @@ export default function Markers(props) {
 
     return (
         <Container>
-            <h1>Маркеры: </h1>
+            <h1>Маркеры</h1>
             <Container style={{ display: 'flex', paddingRight: 0, justifyContent: 'flex-end' }}>
                 <Link className='App-link' to={`/markers/0/rounds`}><Button variant='contained' color='secondary' style={{marginRight: '10px'}}>Начала обходов</Button></Link>
                 <Button variant='contained' color='primary' onClick={switchCreateMarkerMode}>Добавить</Button>

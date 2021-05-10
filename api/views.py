@@ -1,6 +1,7 @@
 from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.hashers import PBKDF2SHA1PasswordHasher
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.renderers import JSONRenderer
@@ -147,9 +148,19 @@ class RoundDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = RoundSerializer
 
 
-class UserView(ListCreateAPIView):
-    queryset = User.objects.all()
+class UserView(ListCreateAPIView, RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
+
+    def get(self, request):
+        user = User.objects.get(id=request.GET['uid'])
+        employees = User.objects.filter(lead_id=user.id)
+        serialiser = UserSerializer(data=employees, many=True)
+        serialiser.is_valid()
+        return HttpResponse(JSONRenderer().render(serialiser.data))
+
+    def post(self, request: HttpRequest):
+        request.data['password'] = PBKDF2SHA1PasswordHasher().encode('123456', 'salt', 180000)
+        return self.create(request)
 
 
 class UserDetailView(RetrieveUpdateDestroyAPIView):
