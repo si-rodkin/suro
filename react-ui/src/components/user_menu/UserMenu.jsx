@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 
 import * as actions from '../../store/actions/auth';
 
-import Avatar from '@material-ui/core/Avatar';
+import { Badge } from '@material-ui/core';
+import SettingsIcon from '@material-ui/icons/Settings';
 import { Menu, MenuItem, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import UserProfile from '../../pages/users/profile/UserProfile';
@@ -33,7 +34,9 @@ function UserMenu(props) {
 
     return (
         <div style={{ marginRight: '15px' }}>
-            <Avatar onClick={e => setAnchor(e.currentTarget)} src="..." />
+            <Badge>
+                <SettingsIcon onClick={e => setAnchor(e.currentTarget)} />
+            </Badge>
             <Menu keepMounted
                 anchorEl={anchor}
                 open={Boolean(anchor)}

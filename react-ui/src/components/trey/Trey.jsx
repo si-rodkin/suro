@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Badge, makeStyles } from '@material-ui/core';
+import { Badge } from '@material-ui/core';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 
 import './Trey.css';
