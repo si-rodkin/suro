@@ -20,6 +20,10 @@ const getColor = row => {
 
     const diff = Math.abs(actualCommitTime.diff(planningCommitTime, 'minutes'));
 
+    if (row.date === null) {
+        return 'whitesmock';
+    }
+
     if (diff <= allowanceTime) {
         return 'lightgreen';
     }
@@ -65,8 +69,8 @@ export default function Statistics() {
                 )}
                 rows={plannedCommits?.map((row) => (
                     <TableRow key={row.name} style={{ backgroundColor: getColor(row) }}>
-                        <TableCell>{moment(row.date).format("DD-MM-yy")}</TableCell>
-                        <TableCell>{moment(row.date).format("HH:mm:ss")}</TableCell>
+                        <TableCell>{row.date !== null? moment(row.date).format("DD-MM-yy"): ''}</TableCell>
+                        <TableCell>{row.date !== null? moment(row.date).format("HH:mm:ss"): 'Точка не отмечена'}</TableCell>
                         <TableCell>{row.round.start_time}</TableCell>
                         <TableCell>{row.marker.name}</TableCell>
                         <TableCell>{row.device.name}</TableCell>
