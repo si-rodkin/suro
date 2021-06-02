@@ -80,16 +80,14 @@ export default function Statistics() {
             <Table
                 header={(<>
                     <TableCell>Дата обхода</TableCell>
-                    <TableCell>Время обхода факт.</TableCell>
-                    <TableCell>Заданное время обхода</TableCell>
+                    <TableCell>Время обхода</TableCell>
                     <TableCell>Номер метки</TableCell>
                     <TableCell>Имя устройства</TableCell></>
                 )}
                 rows={unPlannedCommits?.map((row) => (
-                    <TableRow key={row.name} style={{ backgroundColor: getColor(row) }}>
+                    <TableRow key={row.name}>
                         <TableCell>{moment(row.date).format("DD-MM-yy")}</TableCell>
                         <TableCell>{moment(row.date).format("HH:mm:ss")}</TableCell>
-                        <TableCell>{row.round.start_time}</TableCell>
                         <TableCell>{row.marker.name}</TableCell>
                         <TableCell>{row.device.name}</TableCell>
                     </TableRow>
