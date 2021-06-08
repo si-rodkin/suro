@@ -15,27 +15,21 @@ const validators = {
     name: e => !genValidators.isEmpty(e.name)
 }
 
-export default function RoutesForm({ markers, objectId, value, close, open, saveHandler }) {
+const serviceUrl = `${enviroment.apiHost}/api/guard-routes/`;
+
+export default function RoutesForm({ markers, objectId, value, close, open, create, update }) {
+    const [object, setObject] = React.useState({});
     const [entity, changeEntity] = React.useState({});
     const onChange = (name, value) => changeEntity({ ...entity, [name]: value });
 
-    React.useEffect(() => changeEntity(value), [value]);
+    React.useEffect(() => {
+        changeEntity(value);
 
-    const handleAccept = () => {
-        const apiUrl = `${enviroment.apiHost}/api/guard-routes/`
-        const [method, url] = entity.id !== null ? ['PUT', `${apiUrl}${entity.id}/`] : ['POST', apiUrl];
+        if (objectId !== undefined) {
+            axios.get(`${enviroment.apiHost}/api/guarded-objects/${objectId}`).then(res => setObject(res.data));
+        }
 
-        axios({
-            method: method,
-            url: url,
-            data: { ...entity, guard_object: objectId }
-        })
-            .then(({ data }) => {
-                saveHandler(data);
-                close();
-            })
-            .catch((error) => alert('Ошибка при выполнении операции: ' + error));
-    }
+    }, [value]);
 
     const markerClickHandle = (marker) => {
         let markers = entity.markers;
@@ -59,7 +53,7 @@ export default function RoutesForm({ markers, objectId, value, close, open, save
                 },
                 {
                     label: 'Сохранить',
-                    action: handleAccept,
+                    action: entity.id? () => update(`${serviceUrl}${entity.id}/`, entity): () => { entity.guard_object = objectId; create(serviceUrl, entity);},
                     color: 'primary',
                     disabled: () => Object.values(validators).filter(valid => !valid(entity)).length > 0
                 }

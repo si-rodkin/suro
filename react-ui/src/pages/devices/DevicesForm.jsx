@@ -7,9 +7,7 @@ import PhoneInput from '../../components/dialog/controls/PhoneInput';
 
 import * as genValidators from '../../components/dialog/validators';
 
-import axios from 'axios';
-
-import * as enviroment from '../../enviroment';
+import * as enviroment from "../../enviroment";
 
 const serviceUrl = `${enviroment.apiHost}/api/devices/`;
 
@@ -19,11 +17,10 @@ const validators = {
     phone: entity => genValidators.isPhone(entity.phone)
 }
 
-export default function DevicesForm({ value, close, open, saveHandler, guardRoutes }) {
+export default function DevicesForm({ value, close, open, create, update, guardRoutes }) {
     const [entity, changeEntity] = React.useState({});
     React.useEffect(() => changeEntity(value), [value]);
     const onChange = (name, value) => changeEntity({ ...entity, [name]: value })
-
 
     const routeClickHandle = (route) => {
         let routes = entity.guard_routes;
@@ -37,18 +34,6 @@ export default function DevicesForm({ value, close, open, saveHandler, guardRout
         changeEntity({ ...entity, guard_routes: routes });
     }
 
-    const handleAccept = () => {
-        axios({
-            method: entity.id !== null ? 'PUT' : 'POST',
-            url: entity.id !== null ? `${serviceUrl}${entity.id}/` : serviceUrl,
-            data: entity
-        }).then(({ data }) => {
-            saveHandler(data);
-            close();
-        }).catch((error) => alert('Ошибка при выполнении операции: ' + error));
-    }
-
-
     return (
         <Dialog title={`${entity.id ? 'Изменить' : 'Добавить'} устройство`}
             open={open}
@@ -59,7 +44,7 @@ export default function DevicesForm({ value, close, open, saveHandler, guardRout
                 },
                 {
                     label: 'Сохранить',
-                    action: handleAccept,
+                    action: entity.id? () => update(`${serviceUrl}${entity.id}/`, entity): () => create(serviceUrl, entity),
                     color: 'primary',
                     disabled: () => Object.values(validators).filter(valid => !valid(entity)).length > 0
                 }

@@ -5,8 +5,6 @@ import Input from '../../components/dialog/controls/Input';
 
 import * as genValidators from '../../components/dialog/validators';
 
-import axios from 'axios';
-
 import * as enviroment from '../../enviroment';
 
 const serviceUrl = `${enviroment.apiHost}/api/guarded-objects/`;
@@ -16,20 +14,9 @@ const validators = {
     itn: e => genValidators.isMatch(/^(\d{10}|\d{12})$/, e.itn)
 }
 
-export default function ObjectForm({ value, open, close, saveHandler }) {
+export default function ObjectForm({ value, open, close, create, update }) {
     const [entity, changeEntity] = React.useState({})
     const onChange = (name, value) => changeEntity({ ...entity, [name]: value });
-    const handleAccept = () => {
-        axios({
-            method: entity.id !== null ? 'PUT' : 'POST',
-            url: entity.id !== null ? `${serviceUrl}${entity.id}/` : serviceUrl,
-            data: entity
-        }).then(({ data }) => {
-            saveHandler(data);
-            close();
-        }).catch((error) => alert('Ошибка при выполнении операции: ' + error));
-    }
-
     React.useEffect(() => changeEntity(value), [value]);
 
     return (
@@ -42,7 +29,7 @@ export default function ObjectForm({ value, open, close, saveHandler }) {
                 },
                 {
                     label: 'Сохранить',
-                    action: handleAccept,
+                    action: entity.id? () => update(`${serviceUrl}${entity.id}/`, entity): () => create(serviceUrl, entity),
                     color: 'primary',
                     disabled: () => Object.values(validators).filter(valid => !valid(entity)).length > 0
                 }
